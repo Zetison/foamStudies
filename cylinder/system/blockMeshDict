@@ -1,0 +1,269 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1912                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+	version     2.0;
+	format			ascii;
+	class       dictionary;
+	location		"system";
+	object			blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+scale	 1;
+D 1.0;
+//b #calc "16*$D";
+b #calc "120*$D";
+a #calc "2*$b";
+t #calc "0.1*$D";
+//M #calc "2.5";
+M #calc "0.5";
+//L #calc "3.288*$D";
+L #calc "2*3.14159265358979323846*$D";
+Re 100; //Reynolds number
+nRe 5;  //roughly number of elements withing D/sqrt(Re) outside the cylinder (should be at least 5)
+as 2.0; //aspect rate at inner element layer (at cylinder)
+
+vertices #codeStream
+{
+	codeInclude
+	#{
+	#include "pointField.H"
+	#include "math.h"
+	#};
+	
+	code
+	#{
+		double PI = 3.14159265358979323846;
+    int n = 14; 
+		pointField points(2*n);
+		int counter = 0;
+		double theta;
+		double r[2] = { $D/2, $t+$D/2 };
+		for (label i = 0; i < 2; i++)
+		{
+			for (label j = 0; j < 4; j++)
+			{
+				theta = (j+1/2.0)*PI/2;
+				points[counter++] = point(r[i]*std::cos(theta), r[i]*std::sin(theta), 0);
+			}
+		}
+		double x[3] = {-$b/2, $b/2, $a-$b/2 };
+		double y[2] = {-$b/2, $b/2 };
+		double R;
+	  for (label j = 0; j < 2; j++)
+		{
+		  for (label i = 0; i < 3; i++)
+			{
+				R = std::sqrt(x[i]*x[i]+y[j]*y[j]);
+				if (R > 1.1*r[1])
+        {
+					points[counter++] = point(x[i], y[j], 0);
+        }
+			}
+		}
+		// Duplicate z points
+		for (label i = 0; i < n; i++)
+		{
+				const point& pt = points[i];
+				points[i+n] = point(pt.x(), pt.y(), $L);
+		}
+		
+		os << points;
+	#};
+};
+
+blocks #codeStream
+{	
+  codeInclude
+	#{
+	#include "pointField.H"
+	#include "math.h"
+  #include "stdio.h"
+	#};
+	
+  code	    
+  #{
+    os << "(\n";
+    const int n = 9;
+		double PI = 3.14159265358979323846;
+    double L_o = $b/2-($D/2+$t);
+    double L_i = $t;
+    double h_o = ($a-$b)/(($a-$b)*$M/$D);
+    double delta_s_i = PI*$D/2/($as*2*$b*$M/$D);
+    double beta = (L_i+L_o-delta_s_i+h_o)/(L_i+L_o);
+    double N_o = log(h_o/(L_o*(1-beta)+h_o))/log(beta);
+    double N_i = log((L_o*(1-beta)+h_o)/delta_s_i)/log(beta);
+    double delta_e_i = delta_s_i*std::pow(beta,N_i-1);
+    double delta_s_o = beta*delta_e_i;
+    double delta_e_o = h_o/beta;
+    double r_i = delta_e_i/delta_s_i;
+    double r_o = delta_e_o/delta_s_o;
+
+    int ref[5] = {(int)round(N_i),
+                  (int)round($M*$b/$D),
+                  (int)round(N_o),
+                  (int)round($M*($a-$b)/$D), 
+                  1};
+    int idx[n][4] = { {3, 7, 4, 0},         // 0
+                       {0, 4, 5, 1},       // 1
+                       {1, 5, 6, 2},      // 2
+                       {2, 6, 7 ,3},      // 3
+                       {7, 9, 12, 4},      // 4
+                       {4, 12, 11, 5},      // 5
+                       {5, 11, 8, 6},      // 6
+                       {6, 8, 9, 7},       // 7
+                       {9, 10, 13, 12}};    // 8
+  	for (label i = 0; i < n; i++)
+    {
+      os << "hex (";
+  	  for (label k = 0; k < 2; k++)
+      {
+        for (label j = 0; j < 4; j++)
+          os << idx[i][j]+14*k << " ";
+      }
+      os << ") (";
+      if (i < 4)
+        os << ref[0] << " " << ref[1] << " " << ref[4] << ") simpleGrading (" << r_i << " 1 1)\n"; 
+      else if (i < 8)
+        os << ref[2] << " " << ref[1] << " " << ref[4] << ") simpleGrading (" << r_o << " 1 1)\n"; 
+      else
+        os << ref[3] << " " << ref[1] << " " << ref[4] << ") simpleGrading (1 1 1)\n"; 
+    }
+    os << ")\n";
+  #};
+};
+
+edges #codeStream
+{
+	codeInclude
+	#{
+	#include "math.h"
+	#};
+
+  code 
+  #{
+    os << "(\n";
+		double PI = 3.14159265358979323846; 
+    double theta;
+    int n = 14;
+    for (label k = 0; k < 2; k++)
+    {
+      for (label i = 0; i < 4; i++)
+      {
+        theta = (i+1)*PI/2;
+        for (label j = 0; j < 2; j++)
+        {
+          os << "arc " << i+k*n+4*j << " ";
+          if (i == 3)
+            os << k*n+4*j;
+          else 
+            os << i+1+k*n+4*j;
+          os << " (" << ($D/2+j*$t)*std::cos(theta) << " " << ($D/2+j*$t)*std::sin(theta) << " " << k*$L << ")\n";
+        }
+      }
+    }
+    os << ")\n";
+  #};
+};
+
+boundary
+(
+	inlet
+	{
+		type wall;
+		faces
+		(
+      (11 8 22 25)
+		);
+	}
+	outlet
+	{
+		type wall;
+		faces
+		(
+			(10 13 27 24)
+		);
+		}
+	walls
+	{
+		type wall;
+		faces
+		(
+			(12 11 25 26)
+			(13 12 26 27)
+			(8 9 23 22)
+			(9 10 24 23)
+		);
+	}
+	cylinder
+	{
+		type wall;
+		faces
+		(
+      (0 3 17 14)
+      (1 0 14 15)
+      (2 1 15 16)
+      (3 2 16 17)
+		);
+	}
+  frontAndBack
+  {
+    type empty;
+    faces
+    (
+(3 7 4 0 )
+(17 21 18 14 )
+(0 4 5 1 )
+(14 18 19 15 )
+(1 5 6 2 )
+(15 19 20 16 )
+(2 6 7 3 )
+(16 20 21 17 )
+(7 9 12 4 )
+(21 23 26 18 )
+(4 12 11 5 )
+(18 26 25 19 )
+(5 11 8 6 )
+(19 25 22 20 )
+(6 8 9 7 )
+(20 22 23 21 )
+(9 10 13 12 )
+(23 24 27 26 )
+    );
+  }
+//    os << "(\n";
+//    const int n = 9;
+//    int idx[n][4] = { {3, 7, 4, 0},         // 0
+//                       {0, 4, 5, 1},       // 1
+//                       {1, 5, 6, 2},      // 2
+//                       {2, 6, 7 ,3},      // 3
+//                       {7, 9, 12, 4},      // 4
+//                       {4, 12, 11, 5},      // 5
+//                       {5, 11, 8, 6},      // 6
+//                       {6, 8, 9, 7},       // 7
+//                       {9, 10, 13, 12}};    // 8
+//  	for (label i = 0; i < n; i++)
+//    {
+//  	  for (label k = 0; k < 2; k++)
+//      {
+//        os << "(";
+//        for (label j = 0; j < 4; j++)
+//          os << idx[i][j]+14*k << " ";
+//        os << ")\n";
+//      }
+//    }
+//    os << "\n";
+
+);
+	
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //

@@ -1,0 +1,2 @@
+#!/bin/sh
+rm -r -f 0.* [1-9]* 0/polyMesh postProcessing constant/extendedFeatureEdgeMesh constant/polyMesh VTK processor* dynamicCode

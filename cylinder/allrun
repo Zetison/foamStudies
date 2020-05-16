@@ -1,0 +1,14 @@
+#!/bin/sh
+cp -r ./* ~/OpenFOAM/OpenFOAM-v1912/run/cylinder/
+cd ~/OpenFOAM/OpenFOAM-v1912/run/cylinder/
+
+rm -r -f 0.* [1-9]* 0/polyMesh postProcessing constant/extendedFeatureEdgeMesh constant/polyMesh VTK processor* dynamicCode
+blockMesh
+
+#icoFoam
+
+decomposePar
+mpirun -np 2 icoFoam -parallel
+reconstructPar
+python convertDatToCSV.py
+paraFoam --script=postProcScript.py
