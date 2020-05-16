@@ -291,15 +291,14 @@ coefficientcsvDisplay_2.SeriesColor = ['Cl', '1', '0', '0']
 # set active view
 SetActiveView(spreadSheetView1)
 SelectIDs(IDs=[-1, 0], FieldType=0, ContainingCells=0)
-ExportView('/home/zetison/OpenFOAM/results/cylinder.csv', view=spreadSheetView1)
 ####################################################################################################
 # resize frame
 SetActiveView(renderView1)
 
 RenderAllViews()
-if False:
+if True:
 	# get animation scene
-	SaveAnimation('/home/zetison/Videos/animation.ogv', layout1, 
+	SaveAnimation(dir+'/animation.ogv', layout1, 
 	    FontScaling='Scale fonts proportionally',
 	    OverrideColorPalette='',
 	    StereoMode='No change',
