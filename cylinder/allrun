@@ -8,7 +8,7 @@ blockMesh
 #icoFoam
 
 decomposePar
-mpirun -np 2 icoFoam -parallel
+mpirun -np 8 icoFoam -parallel
 reconstructPar
 python convertDatToCSV.py
 paraFoam --script=postProcScript.py
