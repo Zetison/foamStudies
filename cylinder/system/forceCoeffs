@@ -14,7 +14,7 @@ forces
     writeControl    runTime;
     writeInterval   0.25;
 
-    log yes;
+    log no; //or yes
 
     patches (cylinder);
     rho rhoInf;
