@@ -11,12 +11,10 @@ forces
 {
     type            forceCoeffs;
     libs            (forces);
-    writeControl    runTime;
-    writeInterval   0.25;
-
-    log no; //or yes
-
     patches (cylinder);
+
+    log no; //no or yes
+
     rho rhoInf;
     rhoInf 1;
 

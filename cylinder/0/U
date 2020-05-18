@@ -15,10 +15,9 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions [0 1 -1 0 0 0 0];
+#include "../constant/parameters"
 
-//u_inf 2.65; // -> Re = 265
-u_inf 1.00; // -> Re = 100
+dimensions [0 1 -1 0 0 0 0];
 
 internalField	uniform ($u_inf 0 0);
 

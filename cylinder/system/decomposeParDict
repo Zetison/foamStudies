@@ -15,14 +15,35 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 8;
+//#include "../constant/parameters"
+
+//numberOfSubdomains #calc "$np";
+numberOfSubdomains 2;
 
 method simple;
 
+//coeffs #codeStream
 coeffs
 {
-  n (4 2 1);
-//  delta 0.001;
+  n (1 2 1);  
+//	codeInclude
+//	#{
+//	#include "pointField.H"
+//	#include "stdio.h"
+//	#};
+//	code
+//	#{
+//    int n = (int)$np;
+//		if(n == 2)
+//		  os << " (1 2 1);";
+//    else if(n == 4)
+//      os << " (2 2 1);";
+//    else if(n == 8)
+//      os << " (4 2 1);";
+//    os << " (1 2 1);\n";
+//    std::cout << "n = " << n << std::endl;
+//	#};  
+////  delta 0.001;
 }
 
 distributed     no;

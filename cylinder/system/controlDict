@@ -15,6 +15,8 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+#include "../constant/parameters"
+
 application     simpleFoam;
 
 startFrom       startTime;
@@ -23,16 +25,16 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         150; //150
+endTime         $end_time;
 
-deltaT          0.005;
+deltaT          $delta_t;
 
-maxCo           0.5; // Or other Courant number you wish
+//maxCo           0.5; // Or other Courant number you wish
 
-adjustTimeStep  yes; // Or no 
+adjustTimeStep  no; // yes or no 
 
-writeControl    adjustableRunTime;
-//writeControl    runTime;
+//writeControl    adjustableRunTime;
+writeControl    runTime;
 //writeControl    timeStep;
 
 writeInterval   0.25;

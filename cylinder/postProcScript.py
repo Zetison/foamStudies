@@ -305,7 +305,7 @@ if True:
 	    TransparentBackground=0,
       SaveAllViews=1,
 	    ImageQuality=100,
-	    FrameRate=15,
+	    FrameRate=25,
       ImageResolution=[1920, 1080],
       SeparatorWidth=0,
       SeparatorColor=[1.0, 1.0, 1.0],

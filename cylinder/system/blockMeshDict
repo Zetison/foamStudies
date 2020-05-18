@@ -15,19 +15,8 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-scale	 1;
-D 1.0;
-//b #calc "16*$D";
-b #calc "120*$D";
-a #calc "2*$b";
-t #calc "0.1*$D";
-//M #calc "2.5";
-M #calc "0.5";
-//L #calc "3.288*$D";
-L #calc "2*3.14159265358979323846*$D";
-Re 100; //Reynolds number
-nRe 5;  //roughly number of elements withing D/sqrt(Re) outside the cylinder (should be at least 5)
-as 2.0; //aspect rate at inner element layer (at cylinder)
+#include "../constant/parameters"
+
 
 vertices #codeStream
 {
