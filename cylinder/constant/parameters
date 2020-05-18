@@ -1,0 +1,33 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1912                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+nu 1.0e-02;
+
+//u_inf 2.65; // -> Re = 265
+u_inf 1.00; // -> Re = 100
+end_time 600;
+delta_t 0.0025;
+np 2;
+scale	 1;
+D 1.0;
+//b #calc "16*$D";
+b #calc "120*$D";
+a #calc "2*$b";
+t #calc "0.1*$D";
+//M #calc "2.5";
+//M #calc "1";
+M #calc "1";
+//L #calc "3.288*$D";
+L #calc "2*3.14159265358979323846*$D";
+Re 100; //Reynolds number
+nRe 5;  //roughly number of elements withing D/sqrt(Re) outside the cylinder (should be at least 5)
+as 2.0; //aspect rate at inner element layer (at cylinder)
+
+
+
+// ************************************************************************* //
