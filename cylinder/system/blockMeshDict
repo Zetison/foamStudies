@@ -17,7 +17,7 @@ FoamFile
 
 #include "../constant/parameters"
 
-
+Ms #calc "$M/2.0";
 vertices #codeStream
 {
 	codeInclude
@@ -83,8 +83,8 @@ blocks #codeStream
 		double PI = 3.14159265358979323846;
     double L_o = $b/2-($D/2+$t);
     double L_i = $t;
-    double h_o = ($a-$b)/(($a-$b)*$M/$D);
-    double delta_s_i = PI*$D/2/($as*2*$b*$M/$D);
+    double h_o = ($a-$b)/(($a-$b)*$Ms/$D);
+    double delta_s_i = $D/std::sqrt($Re)/$nRe;
     double beta = (L_i+L_o-delta_s_i+h_o)/(L_i+L_o);
     double N_o = log(h_o/(L_o*(1-beta)+h_o))/log(beta);
     double N_i = log((L_o*(1-beta)+h_o)/delta_s_i)/log(beta);
@@ -95,9 +95,9 @@ blocks #codeStream
     double r_o = delta_e_o/delta_s_o;
 
     int ref[5] = {(int)round(N_i),
-                  (int)round($M*$b/$D),
+                  (int)round($Ms*$b/$D),
                   (int)round(N_o),
-                  (int)round($M*($a-$b)/$D), 
+                  (int)round($Ms*($a-$b)/$D), 
                   1};
     int idx[n][4] = { {3, 7, 4, 0},         // 0
                        {0, 4, 5, 1},       // 1

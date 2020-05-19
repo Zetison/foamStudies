@@ -6,28 +6,19 @@
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 
-nu 1.0e-02;
+nu 1.0e-02;       // kinematic viscosity
+u_inf 1.00;       // incident velocity speed
+end_time 150;     // End time for simulation
+delta_t 0.0025;   // Discretization time step
+np 2;             // Number of processors
+D 1.0;            // Diameter of cylinder
+b #calc "120*$D"; // Height of the domain
+a #calc "2*$b";   // width of the domain
+t #calc "4*$D";   // Thickness of inner annular disk patches in mesh
+M 2;              // Mesh number: M = 1, 2, 3, ...
 
-//u_inf 2.65; // -> Re = 265
-u_inf 1.00; // -> Re = 100
-end_time 600;
-delta_t 0.0025;
-np 2;
-scale	 1;
-D 1.0;
-//b #calc "16*$D";
-b #calc "120*$D";
-a #calc "2*$b";
-t #calc "0.1*$D";
-//M #calc "2.5";
-//M #calc "1";
-M #calc "1";
-//L #calc "3.288*$D";
-L #calc "2*3.14159265358979323846*$D";
-Re 100; //Reynolds number
-nRe 5;  //roughly number of elements withing D/sqrt(Re) outside the cylinder (should be at least 5)
-as 2.0; //aspect rate at inner element layer (at cylinder)
-
-
+nRe #calc "10*$M";  // Roughly the number of elements withing D/sqrt(Re) outside the cylinder (should be at least 5)
+Re #calc "$u_inf*$D/$nu"; // Reynolds number
+L #calc "2*3.14159265358979323846*$D"; // Length of cylinder
 
 // ************************************************************************* //

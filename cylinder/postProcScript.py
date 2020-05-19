@@ -42,7 +42,7 @@ animationScene1.UpdateAnimationUsingDataTimeSteps()
 # get active view
 renderView1 = GetActiveViewOrCreate('RenderView')
 # uncomment following to set a specific view size
-# renderView1.ViewSize = [1934, 1154]
+renderView1.ViewSize = [1280, 720]
 
 # Hide orientation axes
 renderView1.OrientationAxesVisibility = 0
