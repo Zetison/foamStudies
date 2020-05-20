@@ -8,12 +8,15 @@ from paraview.simple import *
 import os
 from math import pi
 import numpy as np
+import getpass
 #### disable automatic camera reset on 'Show'
 dir = os.getcwd()
 # load plugin
 #### disable automatic camera reset on 'Show'
 paraview.simple._DisableFirstRenderCameraReset()
 
+username = getpass.getuser()
+home = '/home/'+username+'/'
 # get active source.
 cylinderfoam = GetActiveSource()
 u_inf = 1
@@ -123,7 +126,7 @@ SetActiveSource(None)
 if True: # plot SINTEF logo
   # create a new 'Logo'
   logo1 = Logo()
-  SINTEF_white = CreateTexture("/home/zetison/OneDrive/work/graphics/logos/SINTEF_white.png")
+  SINTEF_white = CreateTexture(home+'OneDrive/work/graphics/logos/SINTEF_white.png')
   logo1.Texture = SINTEF_white
   logo1Display = Show(logo1, renderView1, 'LogoSourceRepresentation')
   logo1Display.Position = [0.840060240963855, 0.0013581890812250329]
@@ -235,7 +238,7 @@ quartileChartView1.BottomAxisTitle = 'Time [s]'
 plotSelectionOverTime1Display.SeriesColor = ['drag (stats)', '0', '0', '0']
 
 # create a new 'CSV Reader'
-coefficientcsv = CSVReader(FileName=['/home/zetison/OpenFOAM/OpenFOAM-v1912/run/cylinder/postProcessing/forces/0/coefficient.csv'])
+coefficientcsv = CSVReader(FileName=[dir+'/postProcessing/forces/0/coefficient.csv'])
 
 # show data in view
 coefficientcsvDisplay_1 = Show(coefficientcsv, quartileChartView1, 'QuartileChartRepresentation')

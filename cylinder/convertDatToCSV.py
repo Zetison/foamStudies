@@ -6,7 +6,7 @@ import numpy.fft as fft
 import matplotlib.pyplot as plt
 
 dir = os.getcwd()
-name = dir+"/postProcessing/forces/0/coefficient.dat"
+name = "postProcessing/forces/0/coefficient.dat"
 
 with open(name) as handle:
     *_comments, names = itertools.takewhile(lambda line: line.startswith('#'), handle)
