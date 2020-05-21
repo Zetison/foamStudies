@@ -10,15 +10,17 @@ nu 1.0e-02;       // kinematic viscosity
 u_inf 1.00;       // incident velocity speed
 end_time 150;     // End time for simulation
 delta_t 0.0025;   // Discretization time step
-np 2;             // Number of processors
+np 8;             // Number of processors
 D 1.0;            // Diameter of cylinder
-b #calc "120*$D"; // Height of the domain
+b #calc "128*$D"; // Height of the domain
 a #calc "2*$b";   // width of the domain
 t #calc "4*$D";   // Thickness of inner annular disk patches in mesh
-M 2;              // Mesh number: M = 1, 2, 3, ...
+M 7;              // Mesh number: M = 1, 2, 3, ...
 
-nRe #calc "10*$M";  // Roughly the number of elements withing D/sqrt(Re) outside the cylinder (should be at least 5)
-Re #calc "$u_inf*$D/$nu"; // Reynolds number
+Re #calc "$u_inf*$D/$nu";              // Reynolds number
 L #calc "2*3.14159265358979323846*$D"; // Length of cylinder
+nRe #calc "5*pow(2,($M>7)?($M-7):0)";  // Roughly the number of elements
+                                       // withing D/sqrt(Re) outside the cylinder 
+                                       // (should be at least 5)
 
 // ************************************************************************* //

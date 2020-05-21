@@ -17,7 +17,6 @@ FoamFile
 
 #include "../constant/parameters"
 
-Ms #calc "$M/2.0";
 vertices #codeStream
 {
 	codeInclude
@@ -79,11 +78,12 @@ blocks #codeStream
   code	    
   #{
     os << "(\n";
+    int N = 1 << (int)($M-1);
     const int n = 9;
 		double PI = 3.14159265358979323846;
     double L_o = $b/2-($D/2+$t);
     double L_i = $t;
-    double h_o = ($a-$b)/(($a-$b)*$Ms/$D);
+    double h_o = ($a-$b)/(double)N;
     double delta_s_i = $D/std::sqrt($Re)/$nRe;
     double beta = (L_i+L_o-delta_s_i+h_o)/(L_i+L_o);
     double N_o = log(h_o/(L_o*(1-beta)+h_o))/log(beta);
@@ -93,21 +93,20 @@ blocks #codeStream
     double delta_e_o = h_o/beta;
     double r_i = delta_e_i/delta_s_i;
     double r_o = delta_e_o/delta_s_o;
-
     int ref[5] = {(int)round(N_i),
-                  (int)round($Ms*$b/$D),
+                  N,
                   (int)round(N_o),
-                  (int)round($Ms*($a-$b)/$D), 
+                  N, 
                   1};
-    int idx[n][4] = { {3, 7, 4, 0},         // 0
-                       {0, 4, 5, 1},       // 1
-                       {1, 5, 6, 2},      // 2
-                       {2, 6, 7 ,3},      // 3
-                       {7, 9, 12, 4},      // 4
-                       {4, 12, 11, 5},      // 5
-                       {5, 11, 8, 6},      // 6
-                       {6, 8, 9, 7},       // 7
-                       {9, 10, 13, 12}};    // 8
+    int idx[n][4] = { {3, 7, 4, 0},      // 0
+                       {0, 4, 5, 1},     // 1
+                       {1, 5, 6, 2},     // 2
+                       {2, 6, 7 ,3},     // 3
+                       {7, 9, 12, 4},    // 4
+                       {4, 12, 11, 5},   // 5
+                       {5, 11, 8, 6},    // 6
+                       {6, 8, 9, 7},     // 7
+                       {9, 10, 13, 12}}; // 8
   	for (label i = 0; i < n; i++)
     {
       os << "hex (";
@@ -161,7 +160,7 @@ edges #codeStream
   #};
 };
 
-boundary
+boundary #codeStream
 (
 	inlet
 	{

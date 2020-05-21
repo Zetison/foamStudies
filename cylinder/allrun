@@ -1,15 +1,22 @@
-#!/bin/sh
-cp -r ./* ~/OpenFOAM/OpenFOAM-v1912/run/cylinder/
-cd ~/OpenFOAM/OpenFOAM-v1912/run/cylinder/
+#!/bin/bash
+name=${1:-cylinder}
+echo $name
+cp -r ./* ~/OpenFOAM/OpenFOAM-v1912/run/$name/
+cd ~/OpenFOAM/OpenFOAM-v1912/run/$name/
 
 rm -r -f 0.* [1-9]* 0/polyMesh postProcessing constant/extendedFeatureEdgeMesh constant/polyMesh VTK processor* dynamicCode
+np=8
 blockMesh
 
 #icoFoam
 
 decomposePar
-mpirun -np 2 icoFoam -parallel
-reconstructPar
-python convertDatToCSV.py && cat results.txt 
-paraFoam --script=postProcScript.py
+#mpirun -np 8 icoFoam -parallel
+#reconstructPar
+#python convertDatToCSV.py && cat results.txt 
+#paraFoam --script=postProcScript.py
+#for (( n=0; n<$np; n++ ))
+#do
+#  cd processor$n && foamToVTK && cd ..
+#done
 #paraFoam
