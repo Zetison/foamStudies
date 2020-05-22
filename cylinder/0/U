@@ -19,7 +19,8 @@ FoamFile
 
 dimensions [0 1 -1 0 0 0 0];
 
-internalField	uniform ($u_inf 0 0);
+//internalField	uniform ($u_inf 0 0);
+internalField	uniform (0 0 0);
 
 boundaryField
 {
@@ -27,34 +28,46 @@ boundaryField
 	{
 		type  slip;
 	}
-
+	
 	inlet
 	{
 		type  fixedValue;
 		value	uniform ($u_inf 0 0);
 	}
-
+	
 //	outlet
 //	{
 //		type       inletOutlet;
 //		inletValue uniform ($u_inf 0 0);
 //		value      $internalField;
 //	}
-
+		
 	outlet
 	{
-    type advective;
+	  type zeroGradient;
 	}
-
+	
+//	outlet
+//	{
+//	  type advective;
+//	}
+	
 	cylinder
 	{
 		type noSlip;
 	}
-
-  frontAndBack
-  {
-    type empty;
-  }
+//	cylinder
+//	{
+//	  type            rotatingWallVelocity;
+//	  origin          ( 0 0 0 );
+//	  axis            ( 0 0 1 );
+//	  omega           $omega_rot;
+//	}
+	
+	frontAndBack
+	{
+	  type empty;
+	}
 }
 
 // ************************************************************************* //

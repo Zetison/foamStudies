@@ -19,24 +19,65 @@ solvers
 {
 	p
 	{
-		solver         PCG;
-		preconditioner DIC;
-		tolerance      1e-06;
-		relTol         0.05;
+		solver          PCG;
+		preconditioner  DIC;
+		tolerance       1e-06;
+		relTol          0.05;
 	}
 	
 	pFinal
 	{
-		$p;
-		relTol 0;
+		solver          PCG;
+		preconditioner  DIC;
+		tolerance       1e-06;
+		relTol          0;
 	}
 	
 	U
 	{
-		solver    smoothSolver;
-		smoother  symGaussSeidel;
-		tolerance 1e-05;
-		relTol    0;
+		solver          PBiCG;
+		preconditioner  DILU;
+		tolerance       1e-05;
+		relTol          0;
+	}
+	//U
+	//{
+	//	solver    smoothSolver;
+	//	smoother  symGaussSeidel;
+	//	tolerance 1e-05;
+	//	relTol    0;
+	//}
+	
+	k
+	{
+		solver          PBiCG;
+		preconditioner  DILU;
+		tolerance       1e-05;
+		relTol          0;
+	}
+	
+	epsilon
+	{
+		solver          PBiCG;
+		preconditioner  DILU;
+		tolerance       1e-05;
+		relTol          0;
+	}
+	
+	R
+	{
+		solver          PBiCG;
+		preconditioner  DILU;
+		tolerance       1e-05;
+		relTol          0;
+	}
+	
+	nuTilda
+	{
+		solver          PBiCG;
+		preconditioner  DILU;
+		tolerance       1e-05;
+		relTol          0;
 	}
 }
 
@@ -45,7 +86,7 @@ PISO
 	nCorrectors 2;
 	pRefCell    0;
 	pRefValue   0;
-	nNonOrthogonalCorrectors 0;
+	nNonOrthogonalCorrectors 1;
 }
 
 

@@ -9,22 +9,22 @@
 
 forces
 {
-    type            forceCoeffs;
-    libs            (forces);
-    patches (cylinder);
-
-    log no; //no or yes
-
-    rho rhoInf;
-    rhoInf 1;
-
-    liftDir     (0 1 0);
-    dragDir     (1 0 0);
-    CofR        (0 0 0);
-    pitchAxis   (0 0 1);
-    magUInf     1.0;
-    lRef        6.283185307;
-    Aref        6.283185307;
+	type            forceCoeffs;
+	libs            (forces);
+	patches (cylinder);
+	
+	log no; //no or yes
+	
+	rho rhoInf;
+	rhoInf 1;
+	
+	liftDir     (0 1 0);
+	dragDir     (1 0 0);
+	CofR        (0 0 0);
+	pitchAxis   (0 0 1);
+	magUInf     1.0;
+	lRef        6.283185307;
+	Aref        6.283185307;
 }
 
 

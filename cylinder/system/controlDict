@@ -17,7 +17,7 @@ FoamFile
 
 #include "../constant/parameters"
 
-application     simpleFoam;
+application     pisoFoam;
 
 startFrom       startTime;
 
@@ -49,7 +49,7 @@ writePrecision  8;
 
 timeFormat      general;
 
-timePrecision   10;
+timePrecision   13;
 
 runTimeModifiable true;
 
