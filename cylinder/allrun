@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 name=${1:-cylinder}
 mkdir -p ~/OpenFOAM/OpenFOAM-v1912/run/$name
 cp -r ./* ~/OpenFOAM/OpenFOAM-v1912/run/$name/
@@ -6,6 +6,7 @@ cd ~/OpenFOAM/OpenFOAM-v1912/run/$name/
 
 rm -r -f 0.* [1-9]* 0/polyMesh postProcessing constant/extendedFeatureEdgeMesh constant/polyMesh VTK processor* dynamicCode
 np=$(cat constant/parameters | grep -oP '(?<=np )[0-9]+')
+
 blockMesh
 
 #pisoFoam

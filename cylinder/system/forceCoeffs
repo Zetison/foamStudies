@@ -7,16 +7,20 @@
 \*---------------------------------------------------------------------------*/
 
 
-forces
+forceCoeffs
 {
-	type            forceCoeffs;
-	libs            (forces);
+//	type    forceCoeffs;
+	type    forceCoeffs;
+	functionObjectLibs  ( "libforces.so" );
 	patches (cylinder);
 	
-	log no; //no or yes
+	log yes; //no or yes
 	
 	rho rhoInf;
-	rhoInf 1;
+//	rhoInf 1;
+	rhoInf 1.225;
+	pName p;
+	UName U;
 	
 	liftDir     (0 1 0);
 	dragDir     (1 0 0);

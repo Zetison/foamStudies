@@ -28,7 +28,7 @@ timeKeeper1 = GetTimeKeeper()
 # create a new 'OpenFOAMReader'
 cylinderfoam = OpenFOAMReader(FileName=dir+'/cylinder.foam')
 cylinderfoam.MeshRegions = ['internalMesh']
-cylinderfoam.CellArrays = ['U', 'p', 'vorticity']
+cylinderfoam.CellArrays = ['vorticity']
 
 # update animation scene based on data timesteps
 animationScene1.UpdateAnimationUsingDataTimeSteps()
@@ -128,7 +128,7 @@ if True:
 ## Create 2D plots of lift and drag
 
 # create a new 'CSV Reader'
-coefficientcsv = CSVReader(FileName=[dir+'/postProcessing/forces/0/coefficient.csv'])
+coefficientcsv = CSVReader(FileName=[dir+'/postProcessing/forceCoeffs/0/coefficient.csv'])
 
 # Create a new 'Quartile Chart View'
 quartileChartView1 = CreateView('QuartileChartView')
