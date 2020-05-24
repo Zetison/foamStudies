@@ -23,7 +23,7 @@ numberOfSubdomains 4;
 method simple;
 
 //coeffs #codeStream
-coeffs
+simpleCoeffs
 {
 //	n ($np 1 1);  
 	n (4 1 1);  
@@ -46,6 +46,24 @@ coeffs
 //	#};  
 ////  delta 0.001;
 }
+
+hierarchicalCoeffs
+{
+    n               ( 1 1 1 );
+    delta           0.001;
+    order           xyz;
+}
+
+metisCoeffss
+{
+    processorWeights ( 24 56 );
+}
+
+manualCoeffs
+{
+    dataFile        "";
+}
+
 
 distributed     no;
 

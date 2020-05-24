@@ -112,9 +112,9 @@ if True: # plot SINTEF logo
 if True:
 	plane1 = Plane()
 	plane1Display = Show(plane1, renderView1, 'GeometryRepresentation')
-	plane1.Origin = [-0.5, -0.5, 10.0]
-	plane1.Point1 = [0.5, -0.5, 10.0]
-	plane1.Point2 = [-0.5, 0.5, 10.0]
+	plane1.Origin = [-1, -1, 10.0]
+	plane1.Point1 = [1, -1, 10.0]
+	plane1.Point2 = [-1, 1, 10.0]
 	transform1 = Transform(Input=plane1)
 	volleyball = CreateTexture(home+"OneDrive/work/paraview/sources/volleyball.png")
 	transform1Display = Show(transform1, renderView1, 'GeometryRepresentation')

@@ -8,13 +8,13 @@ name = "postProcessing/forceCoeffs/0/coefficient.dat"
 
 data = np.loadtxt(name, skiprows=0)
 
-t_start = 130
-t_start = 0
+t_start = 200
+#t_start = 0
 u_inf = 1.0
-D = 1.0
+D = 2.0
 
 t  = data[:,0]
-Cd = data[:,2]
+Cd = data[:,1]
 Cl = data[:,3]
 
 N  = len(t)

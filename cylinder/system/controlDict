@@ -41,7 +41,7 @@ writeInterval   0.25;
 //timeInterval    1;
 //writeFrequency  1;
 
-purgeWrite      0;
+purgeWrite      2; //number of existing direcories at any time (0 = disable)
 
 writeFormat     binary; //or ascii
 
@@ -55,8 +55,34 @@ runTimeModifiable true;
 
 writeCompression  off;
 
+// ************************************************************************* //
+
 functions
 {
-  #include "forceCoeffs"
+	forceCoeffs
+	{
+		type    forceCoeffs;
+	//	functionObjectLibs  ( "libforces.so" );
+		libs    (forces);
+		patches (cylinder);
+//		outputControl  timeStep;
+//		outputInterval 10;
+
+		log yes; //no or yes
+		
+		rho rhoInf;
+	//	rhoInf 1;
+		rhoInf 1.225;
+	//	rhoInf 100000;
+		pName p;
+		UName U;
+		
+		liftDir     (0 1 0);
+		dragDir     (1 0 0);
+		CofR        (0 0 0);
+		pitchAxis   (0 0 1);
+		magUInf     $u_inf;
+		lRef        $L;
+		Aref        #calc "$L*$D";
+	}
 }
-// ************************************************************************* //

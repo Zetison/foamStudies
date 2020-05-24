@@ -5,8 +5,22 @@ cp -r ./* ~/OpenFOAM/OpenFOAM-v1912/run/$name/
 cd ~/OpenFOAM/OpenFOAM-v1912/run/$name/
 
 rm -r -f 0.* [1-9]* 0/polyMesh postProcessing constant/extendedFeatureEdgeMesh constant/polyMesh VTK processor* dynamicCode
-np=$(cat constant/parameters | grep -oP '(?<=np )[0-9]+')
-
+nu="2.0e-02"       # kinematic viscosity
+#nu="18.6e-06"       # kinematic viscosity of air at 25°C
+u_inf=1.00       # incident velocity speed
+end_time=1000    # End time for simulation
+np=4             # Number of processors
+D=2.0            # Diameter of cylinder
+M=9              # Mesh number: M = 1, 2, 3, ...
+delta_t="0.01"   # Discretization time step
+omega_rot="0.0"  # Angular velocity of cylinder rotation
+np=4             # Number of processors to use
+L=1.0            # Length of cylinder
+u_inf=1.0        # incident velocity speed
+nRe_0=10				 # minimum number of elements withing D/sqrt(Re) outside cylinder
+g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file
+./generate_blockMeshDict_file $D $L $nu $M $nRe_0 $np $omega_rot $u_inf $delta_t $end_time
+cat constant/parameters
 blockMesh
 
 #pisoFoam
@@ -15,9 +29,11 @@ decomposePar
 mpirun -np $np pisoFoam -parallel
 reconstructPar
 postProcess -func vorticity
-python convertDatToCSV.py
-python exportResults.py && cat results.txt 
+python3.7 convertDatToCSV.py
+python3.7 exportResults.py && cat results.txt 
 paraFoam --script=postProcScript.py
+
+#cd system && mv blockMeshDict temp && mv blockMeshDict_old blockMeshDict && mv temp blockMeshDict_old && cd ..
 
 #for (( n=0; n<$np; n++ ))
 #do
