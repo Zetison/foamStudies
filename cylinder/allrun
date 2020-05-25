@@ -14,7 +14,6 @@ D=2.0            # Diameter of cylinder
 M=8              # Mesh number: M = 1, 2, 3, ...
 delta_t="0.01"   # Discretization time step
 omega_rot="0.0"  # Angular velocity of cylinder rotation
-np=4             # Number of processors to use
 u_inf=1.0        # incident velocity speed
 nRe_0=10				 # minimum number of elements withing D/sqrt(Re) outside cylinder
 g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file
