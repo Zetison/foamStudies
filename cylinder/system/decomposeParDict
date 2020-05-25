@@ -10,64 +10,17 @@ FoamFile
 	version     2.0;
 	format      ascii;
 	class       dictionary;
-	location    "system";
+	location    "constant";
 	object      decomposeParDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-//#include "../constant/parameters"
-
-//numberOfSubdomains $np;
 numberOfSubdomains 4;
-
 method simple;
-
-//coeffs #codeStream
 simpleCoeffs
 {
-//	n ($np 1 1);  
-	n (4 1 1);  
-//	codeInclude
-//	#{
-//	#include "pointField.H"
-//	#include "stdio.h"
-//	#};
-//	code
-//	#{
-//	  int n = (int)$np;
-//	  std::cout << "n = " << n << std::endl;
-//		if(n == 2)
-//		  os << "n (1 2 1);";
-//	  else if(n == 4)
-//	    os << "n (2 2 1);";
-//	  else if(n == 8)
-//	    os << "n (4 2 1);";
-//	  os << "n (1 2 1);\n";
-//	#};  
-////  delta 0.001;
+	n (4 1 1);
 }
-
-hierarchicalCoeffs
-{
-    n               ( 1 1 1 );
-    delta           0.001;
-    order           xyz;
-}
-
-metisCoeffss
-{
-    processorWeights ( 24 56 );
-}
-
-manualCoeffs
-{
-    dataFile        "";
-}
-
-
-distributed     no;
-
-roots           ( );
 
 
 // ************************************************************************* //

@@ -1,26 +1,24 @@
 #!/bin/sh
 name=${1:-cylinder}
-mkdir -p ~/OpenFOAM/OpenFOAM-v1912/run/$name
-cp -r ./* ~/OpenFOAM/OpenFOAM-v1912/run/$name/
-cd ~/OpenFOAM/OpenFOAM-v1912/run/$name/
+pathToFolder="$HOME/OpenFOAM/OpenFOAM-v1912/run/$name"
+rm -r -f $pathToFolder
+mkdir -p $pathToFolder
+cp -r ./* $pathToFolder
+cd $pathToFolder
 
-rm -r -f 0.* [1-9]* 0/polyMesh postProcessing constant/extendedFeatureEdgeMesh constant/polyMesh VTK processor* dynamicCode
-nu="2.0e-02"       # kinematic viscosity
-#nu="18.6e-06"       # kinematic viscosity of air at 25°C
-u_inf=1.00       # incident velocity speed
+nu="2.0e-02"     # kinematic viscosity
+#nu="18.6e-06"   # kinematic viscosity of air at 25°C
 end_time=1000    # End time for simulation
-np=4             # Number of processors
+np=6             # Number of processors
 D=2.0            # Diameter of cylinder
-M=9              # Mesh number: M = 1, 2, 3, ...
+M=8              # Mesh number: M = 1, 2, 3, ...
 delta_t="0.01"   # Discretization time step
 omega_rot="0.0"  # Angular velocity of cylinder rotation
 np=4             # Number of processors to use
-L=1.0            # Length of cylinder
 u_inf=1.0        # incident velocity speed
 nRe_0=10				 # minimum number of elements withing D/sqrt(Re) outside cylinder
 g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file
-./generate_blockMeshDict_file $D $L $nu $M $nRe_0 $np $omega_rot $u_inf $delta_t $end_time
-cat constant/parameters
+./generate_blockMeshDict_file $D $nu $M $nRe_0 $np $omega_rot $u_inf $delta_t $end_time
 blockMesh
 
 #pisoFoam

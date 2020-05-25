@@ -50,20 +50,20 @@ void insSubArray(double A[][3], int idx, double x, double y, double z){
 
 
 int main(int argc, char **argv){
-	double D = stod(argv[1]);
-	double L = stod(argv[2]);
-	double nu = stod(argv[3]);
-	int M = stoi(argv[4]);
-	int nRe_0 = stoi(argv[5]);
-	int np = stoi(argv[6]);
-	double omega_rot = stod(argv[7]);
-	double u_inf = stod(argv[8]);
-	double delta_t = stod(argv[9]);
-	double end_time = stod(argv[10]);
+	double D         = stod(argv[1]);
+	double nu        = stod(argv[2]);
+	int M            = stoi(argv[3]);
+	int nRe_0        = stoi(argv[4]);
+	int np           = stoi(argv[5]);
+	double omega_rot = stod(argv[6]);
+	double u_inf     = stod(argv[7]);
+	double delta_t   = stod(argv[8]);
+	double end_time  = stod(argv[9]);
 
 	double b = 64*D;
 	double a = 2*b;
 	double t = 4*D;
+	double L = 2*M_PI*D;
 
 	ofstream out1("./constant/parameters");
 	out1.precision(15);	
@@ -77,6 +77,18 @@ int main(int argc, char **argv){
 	out1 << "D " << D << ";\n";
 	printFooter(out1);
 	out1.close();
+	
+	ofstream out2("./system/decomposeParDict");
+	out2.precision(15);	
+	printHeader(out2, "2.0", "ascii", "dictionary", "constant", "decomposeParDict");
+	out2 << "numberOfSubdomains " << np << ";\n";
+	out2 << "method simple;\n";
+	out2 << "simpleCoeffs\n";
+	out2 << "{\n";
+	out2 << "\tn (" << np << " 1 1);\n";
+	out2 << "}\n\n";
+	printFooter(out2);
+	out2.close();
 		
 
 	double Re = max(u_inf,omega_rot*D/2)*D/nu;  // Reynolds number
