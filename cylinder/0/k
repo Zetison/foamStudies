@@ -11,7 +11,7 @@ FoamFile
 	format      ascii;
 	class       volScalarField;
 	location    "0";
-	object      p;
+  object      k;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -19,35 +19,39 @@ FoamFile
 
 dimensions [0 2 -2 0 0 0 0];
 
-internalField uniform 0;
+internalField	uniform $k_0;
 
 boundaryField
 {
 	walls
 	{
-		type zeroGradient;
-	}
-	
+		type  kqRWallFunction;
+		value uniform $k_0;
+  }
+
 	inlet
 	{
-		type zeroGradient;
+		type  kqRWallFunction;
+		value uniform $k_0;
 	}
-	
+
 	outlet
 	{
-		type  fixedValue;
-		value	$internalField;
+		type  kqRWallFunction;
+		value $internalField;
 	}
-	
+
 	cylinder
 	{
-		type zeroGradient;
+		type  kqRWallFunction;
+		value uniform $k_0;
 	}
-	   
-  frontAndBack
+  
+	frontAndBack
   {
 		type empty;
   }
 }
+
 
 // ************************************************************************* //

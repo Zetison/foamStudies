@@ -37,15 +37,15 @@ adjustTimeStep  no; // yes or no
 writeControl    runTime;
 //writeControl    timeStep;
 
-writeInterval   0.25;
+writeInterval   0.1;
 //timeInterval    1;
 //writeFrequency  1;
 
-purgeWrite      2; //number of existing direcories at any time (0 = disable)
+purgeWrite      0; //number of existing direcories at any time (0 = disable)
 
 writeFormat     binary; //or ascii
 
-writePrecision  8;
+writePrecision  6;
 
 timeFormat      general;
 
@@ -62,18 +62,14 @@ functions
 	forceCoeffs
 	{
 		type    forceCoeffs;
-	//	functionObjectLibs  ( "libforces.so" );
 		libs    (forces);
 		patches (cylinder);
-//		outputControl  timeStep;
-//		outputInterval 10;
 
-		log yes; //no or yes
+		log no; //no or yes
 		
 		rho rhoInf;
-	//	rhoInf 1;
-		rhoInf 1.225;
-	//	rhoInf 100000;
+		rhoInf 1;
+		
 		pName p;
 		UName U;
 		

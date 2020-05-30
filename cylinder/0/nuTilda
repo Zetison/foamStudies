@@ -9,17 +9,44 @@ FoamFile
 {
 	version     2.0;
 	format      ascii;
-	class       dictionary;
-	location    "constant";
-	object      RASProperties;
+	class       volScalarField;
+	location    "0";
+	object      nuTilda;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-RASModel        kEpsilon;
+dimensions [0 2 -1 0 0 0 0];
 
-turbulence      off;
 
-printCoeffs     on;
 
+internalField uniform 0;
+
+boundaryField
+{
+	walls
+	{
+		type zeroGradient;
+	}
+
+	inlet
+	{
+		type zeroGradient;
+	}
+
+	outlet
+	{
+		type zeroGradient;
+	}
+
+	cylinder
+	{
+		type zeroGradient;
+	}
+	
+	frontAndBack
+  {
+		type empty;
+  }
+}
 
 // ************************************************************************* //

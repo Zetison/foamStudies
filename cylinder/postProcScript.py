@@ -10,10 +10,17 @@ dir = os.getcwd()
 #### disable automatic camera reset on 'Show'
 paraview.simple._DisableFirstRenderCameraReset()
 
+staticCylinder=False
 username = getpass.getuser()
 home = '/home/'+username+'/'
+
+# get active view
+renderView1 = GetActiveViewOrCreate('RenderView')
+
 # get active source.
 cylinderfoam = GetActiveSource()
+cylinderfoamDisplay = Show(cylinderfoam, renderView1, 'UnstructuredGridRepresentation')
+cylinderfoamDisplay.SetScalarBarVisibility(renderView1, False)
 
 # destroy cylinderfoam
 Delete(cylinderfoam)
@@ -32,9 +39,6 @@ cylinderfoam.CellArrays = ['vorticity']
 
 # update animation scene based on data timesteps
 animationScene1.UpdateAnimationUsingDataTimeSteps()
-
-# get active view
-renderView1 = GetActiveViewOrCreate('RenderView')
 
 # Hide orientation axes
 renderView1.OrientationAxesVisibility = 0
@@ -79,7 +83,10 @@ vorticityPWF.RescaleTransferFunction(0.0, 10.0)
 # Rescale transfer function
 vorticityLUT.AutomaticRescaleRangeMode = "Never"
 vorticityLUT.RescaleOnVisibilityChange = 0
-vorticityLUT.RescaleTransferFunction(0.0, 10.0)
+if staticCylinder:
+	vorticityLUT.RescaleTransferFunction(0.0, 10.0)
+else:
+	vorticityLUT.RescaleTransferFunction(0.0, 20.0)
 
 # get color legend/bar for vorticityLUT in view renderView1
 vorticityLUTColorBar = GetScalarBar(vorticityLUT, renderView1)
@@ -87,7 +94,7 @@ vorticityLUTColorBar = GetScalarBar(vorticityLUT, renderView1)
 # change scalar bar placement
 vorticityLUTColorBar.Orientation = 'Vertical'
 vorticityLUTColorBar.WindowLocation = 'LowerLeftCorner'
-vorticityLUTColorBar.Title = 'Velocity'
+vorticityLUTColorBar.Title = 'Vorticity'
 vorticityLUTColorBar.ComponentTitle = 'magnitude'
 
 # current camera placement for renderView1
@@ -109,12 +116,13 @@ if True: # plot SINTEF logo
 
 #############################################################################################################
 ## Add volleyball image
-if True:
+if not(staticCylinder):
 	plane1 = Plane()
+	D = 1.0
 	plane1Display = Show(plane1, renderView1, 'GeometryRepresentation')
-	plane1.Origin = [-1, -1, 10.0]
-	plane1.Point1 = [1, -1, 10.0]
-	plane1.Point2 = [-1, 1, 10.0]
+	plane1.Origin = [-D/2, -D/2, 10.0]
+	plane1.Point1 = [D/2, -D/2, 10.0]
+	plane1.Point2 = [-D/2, D/2, 10.0]
 	transform1 = Transform(Input=plane1)
 	volleyball = CreateTexture(home+"OneDrive/work/paraview/sources/volleyball.png")
 	transform1Display = Show(transform1, renderView1, 'GeometryRepresentation')
@@ -137,11 +145,14 @@ quartileChartView1 = CreateView('QuartileChartView')
 AssignViewToLayout(view=quartileChartView1, layout=layout1, hint=1)
 
 # Properties modified on quartileChartView1
-staticCylinder=True
 if staticCylinder:
 	quartileChartView1.LeftAxisUseCustomRange = 1
 	quartileChartView1.LeftAxisRangeMaximum = 1.4
 	quartileChartView1.LeftAxisRangeMinimum = 1.0
+else:
+	quartileChartView1.LeftAxisUseCustomRange = 1
+	quartileChartView1.LeftAxisRangeMaximum = 3.0
+	quartileChartView1.LeftAxisRangeMinimum = 0.0
 quartileChartView1.ShowLegend = 0
 quartileChartView1.LeftAxisTitle = 'Drag coefficient'
 quartileChartView1.BottomAxisTitle = 'Time [s]'

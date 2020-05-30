@@ -48,26 +48,73 @@ void insSubArray(double A[][3], int idx, double x, double y, double z){
 	A[idx][2] = z;
 }
 
-
 int main(int argc, char **argv){
 	double D         = stod(argv[1]);
 	double nu        = stod(argv[2]);
 	int M            = stoi(argv[3]);
-	int nRe_0        = stoi(argv[4]);
+	int N_Re_0        = stoi(argv[4]);
 	int np           = stoi(argv[5]);
 	double omega_rot = stod(argv[6]);
 	double u_inf     = stod(argv[7]);
 	double delta_t   = stod(argv[8]);
 	double end_time  = stod(argv[9]);
+	double bdD       = stod(argv[10]);
 
-	double b = 64*D;
+	double b = bdD*D;
 	double a = 2*b;
 	double t = 4*D;
 	double L = 2*M_PI*D;
+	double U_max = max(u_inf,omega_rot*D/2);
+	double Um = 0.05*U_max;
+	double l = 0.2*a;
+	double k_0 = 3/2.0*Um*Um;
+	double epsilon_0 = pow(0.09,0.75)*pow(k_0,1.5)/l;
+	double omega_0 = sqrt(k_0)/l;
+	double nut_0 = 0.09*k_0*k_0/epsilon_0;
+	double Re = U_max*D/nu;  // Reynolds number
+	int N_Re = N_Re_0*pow(2,(M>7)?(M-7):0);        // Roughly the number of elements
+	                                             // withing D/sqrt(Re) outside the cylinder 
+                                               // (should be at least 5)
 
+	int N = 1 << M-1;
+	double delta_Nr = (a-b)/N;
+	double f, df; // Find beta through Newton iterations
+	double beta = 2.0;
+	cout << "N_Re = " << N_Re << endl;
+	for (size_t i = 0; i < 100; i++)
+	{
+		f = (delta_Nr+(1-beta)*(b-D)/2)*(1-pow(beta,N_Re))-D/sqrt(Re)*(1-beta);
+		df = (-(b-D)/2)*(1-pow(beta,N_Re)) - (delta_Nr+(1-beta)*(b-D)/2)*N_Re*pow(beta,N_Re-1) + D/sqrt(Re);
+		beta -= f/df;
+	}
+	double delta_0 = delta_Nr + 0.5*(1-beta)*(b-D);
+	int N_r = ceil(log(delta_Nr/delta_0)/log(beta));
+	for (size_t i = 0; i < 100; i++)
+	{
+		f = D/sqrt(Re)*(1-pow(beta,N_r)) - (b-D)/2*(1-pow(beta,N_Re));
+		df = -D/sqrt(Re)*N_r*pow(beta,N_r-1) + (b-D)/2*N_Re*pow(beta,N_Re-1);
+		beta -= f/df;
+	}
+	delta_0 = 0.5*(b-D)*(1-beta)/(1-pow(beta,N_r));
+	double x_i = D/2;
+	int N_t = 0;
+	double delta = delta_0;
+	while (x_i < D/2 + t)
+	{
+		x_i += delta;
+		delta *= beta;
+		N_t++;
+	}
+	t = x_i-D/2;
+	cout << "delta_0 = " << delta_0 << endl;
+	cout << "x_t = " << D/2+t << endl;
+	cout << "Re = " << Re << endl;
+	cout << "beta = " << beta << endl;
+	cout << "N_t = " << N_t << endl;
+		
 	ofstream out1("./constant/parameters");
 	out1.precision(15);	
-	printHeader(out1, "", "ascii", "dictionary", "constant", "parameters");
+	printHeader(out1, "2.0", "ascii", "IOobject", "constant", "parameters");
 	out1 << "nu " << nu << ";\n";
 	out1 << "u_inf " << u_inf << ";\n";
 	out1 << "end_time " << end_time << ";\n";
@@ -75,6 +122,11 @@ int main(int argc, char **argv){
 	out1 << "omega_rot " << omega_rot << ";\n";
 	out1 << "L " << L << ";\n";
 	out1 << "D " << D << ";\n";
+	out1 << "beta " << beta << ";\n";
+	out1 << "k_0 " << k_0 << ";\n";
+	out1 << "epsilon_0 " << epsilon_0 << ";\n";
+	out1 << "omega_0 " << omega_0 << ";\n";
+	out1 << "nut_0 " << nut_0 << ";\n";
 	printFooter(out1);
 	out1.close();
 	
@@ -90,14 +142,7 @@ int main(int argc, char **argv){
 	printFooter(out2);
 	out2.close();
 		
-
-	double Re = max(u_inf,omega_rot*D/2)*D/nu;  // Reynolds number
-	int nRe = nRe_0*pow(2,(M>7)?(M-7):0);        // Roughly the number of elements
-	                                             // withing D/sqrt(Re) outside the cylinder 
-                                               // (should be at least 5)
-
 	
-
 	ofstream out("./system/blockMeshDict");
 	out.precision(15);	
 	printHeader(out, "2.0", "ascii", "dictionary", "system", "blockMeshDict");
@@ -130,32 +175,17 @@ int main(int argc, char **argv){
 	}
 	// Duplicate z points
 	for (size_t i = 0; i < n; i++)
-	{
 		insSubArray(points, i+n, points[i][0], points[i][1], L);
-	}
 	
 	printArray(out,points,2*n,3, "\t");
 	out << ");\n";
 	out << "\n";
 	out << "blocks\n";
 	out << "(\n";
-	int N = 1 << M-1;
 	const int nb = 9;
-	double L_o = b/2-(D/2+t);
-	double L_i = t;
-	double h_o = b/N;
-	double delta_s_i = D/sqrt(Re)/nRe;
-	double beta = (L_i+L_o-delta_s_i+h_o)/(L_i+L_o);
-	double N_o = log(h_o/(L_o*(1-beta)+h_o))/log(beta);
-	double N_i = log((L_o*(1-beta)+h_o)/delta_s_i)/log(beta);
-	double delta_e_i = delta_s_i*pow(beta,N_i-1);
-	double delta_s_o = beta*delta_e_i;
-	double delta_e_o = h_o/beta;
-	double r_i = delta_e_i/delta_s_i;
-	double r_o = delta_e_o/delta_s_o;
-	int ref[5] = {(int)round(N_i),
+	int ref[5] = {N_t,
 	              N,
-	              (int)round(N_o),
+	              N_r-N_t,
 	              (int)round(N*(a-b)/b), 
 	              1};
 	int idx[n][4] = { {3, 7, 4, 0},      // 0
@@ -171,15 +201,13 @@ int main(int argc, char **argv){
 	{
 		out << "\thex (";
 		for (size_t k = 0; k < 2; k++)
-		{
 			for (size_t j = 0; j < 4; j++)
 				out << idx[i][j]+n*k << " ";
-		}
 		out << ") (";
 		if (i < 4)
-			out << ref[0] << " " << ref[1] << " " << ref[4] << ") simpleGrading (" << r_i << " 1 1)\n"; 
+			out << ref[0] << " " << ref[1] << " " << ref[4] << ") simpleGrading (" << pow(beta,N_t-1) << " 1 1)\n"; 
 		else if (i < 8)
-			out << ref[2] << " " << ref[1] << " " << ref[4] << ") simpleGrading (" << r_o << " 1 1)\n"; 
+			out << ref[2] << " " << ref[1] << " " << ref[4] << ") simpleGrading (" << pow(beta,N_r-N_t-1) << " 1 1)\n"; 
 		else
 			out << ref[3] << " " << ref[1] << " " << ref[4] << ") simpleGrading (1 1 1)\n"; 
 	}

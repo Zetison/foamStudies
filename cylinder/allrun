@@ -6,18 +6,21 @@ mkdir -p $pathToFolder
 cp -r ./* $pathToFolder
 cd $pathToFolder
 
-nu="2.0e-02"     # kinematic viscosity
+nu="1.0e-02"     # kinematic viscosity
 #nu="18.6e-06"   # kinematic viscosity of air at 25°C
+#nu="18.6e-05"   # kinematic viscosity of air at 25°C
 end_time=1000    # End time for simulation
-np=6             # Number of processors
-D=2.0            # Diameter of cylinder
-M=8              # Mesh number: M = 1, 2, 3, ...
-delta_t="0.01"   # Discretization time step
-omega_rot="0.0"  # Angular velocity of cylinder rotation
+np=4             # Number of processors
+D=1.0            # Diameter of cylinder
+M=7            # Mesh number: M = 1, 2, 3, ... (M = 7 is the standard mesh)
+delta_t="0.05"   # Discretization time step
+omega_rot=0.0  # Angular velocity of cylinder rotation
 u_inf=1.0        # incident velocity speed
-nRe_0=10				 # minimum number of elements withing D/sqrt(Re) outside cylinder
+nRe_0=10 				 # minimum number of elements withing D/sqrt(Re) outside cylinder
+bdD=64           # ratio between height of domain and diameter of cylinder
+#bdD=16           # ratio between height of domain and diameter of cylinder
 g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file
-./generate_blockMeshDict_file $D $nu $M $nRe_0 $np $omega_rot $u_inf $delta_t $end_time
+./generate_blockMeshDict_file $D $nu $M $nRe_0 $np $omega_rot $u_inf $delta_t $end_time $bdD
 blockMesh
 
 #pisoFoam

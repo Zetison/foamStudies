@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<simulation>
+  <include>cyl2D.xinp</include>
+
+  <navierstokes formulation="FORM"/>
+  <chorin>
+    <boundaryforce set="cylinder" file="Cyl2D_force.dat" stride="1"/>
+    <fluidproperties type="reynolds" rho="1.0" Re="REYNOLDS"/>
+  </chorin>
+
+  <velocityprediction>
+    <boundaryconditions>
+      <dirichlet set="inflow" comp="1" type="expression">if(below(t,1.0),t,1.0)</dirichlet>
+      <dirichlet set="inflow" comp="2" type="expression">0.02*if(below(t,1.0),1.0,0.0)</dirichlet>
+      <dirichlet set="wall" comp="2"/>
+      <dirichlet set="cylinder" comp="12"/>
+    </boundaryconditions>
+    <linearsolver>
+      <type>preonly</type>
+      <pc>lu</pc>
+      <package>mumps</package>
+    </linearsolver>
+  </velocityprediction>
+
+  <pressurecorrection>
+    <boundaryconditions>
+      <dirichlet set="outflow" comp="1"/>
+    </boundaryconditions>
+    <linearsolver>
+      <type>preonly</type>
+      <pc>lu</pc>
+      <package>mumps</package>
+    </linearsolver>
+  </pressurecorrection>
+
+  <velocitycorrection>
+    <boundaryconditions>
+      <dirichlet set="inflow" comp="1" type="expression">if(below(t,1.0),t,1.0)</dirichlet>
+      <dirichlet set="inflow" comp="2" type="expression">0.02*if(below(t,1.0),1.0,0.0)</dirichlet>
+      <dirichlet set="wall" comp="2"/>
+      <dirichlet set="cylinder" comp="12"/>
+    </boundaryconditions>
+    <linearsolver>
+      <type>preonly</type>
+      <pc>lu</pc>
+      <package>mumps</package>
+    </linearsolver>
+  </velocitycorrection>
+
+  <discretization>
+    <nGauss>NGAUSS</nGauss>
+  </discretization>
+
+  <postprocessing>
+    <stride>STRIDE</stride>
+  </postprocessing>
+
+  <timestepping start="0" end="150" dt="0.05" type="bdf2"/>
+</simulation>

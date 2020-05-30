@@ -1,0 +1,11 @@
+#!/bin/bash
+D=1.0
+b=64.0
+Re=100
+M=7
+N=$((2**($M-1)))
+N2=$((2*N))
+nRe=10
+t=4.0
+beta=$(grep -oP '(?<=beta )[0-9]+\.[0-9]+' constant/parameters)
+python3.7 ~/kode/meshscripts/cylinder/cylinder.py --diam=$D --width=$b --front=$b --thickness=$t --back=192.0 --side=$b --height=0.0 --Re=$Re --grad=$beta --nel-bndl=$nRe --nel-circ=$N --nel-height=1 --order=2 --no-outer-graded --out=/home/zetison/OneDrive/work/openfoam/cylinder/cylinder

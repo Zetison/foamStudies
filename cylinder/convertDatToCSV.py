@@ -4,11 +4,6 @@ import os
 
 dir = os.getcwd()
 name = "postProcessing/forceCoeffs/0/coefficient.dat"
-
-with open(name) as handle:
-    *_comments, names = itertools.takewhile(lambda line: line.startswith('#'), handle)
-    names = names[1:].split()
-
-headers = pd.read_table(name, header=0, names=names, sep='\t', comment='#')
-headers.to_csv(name[:-4]+'.csv', index=False)
+data = np.loadtxt(name, skiprows=0)
+np.savetxt(name[:-4]+'.csv', data[:,:-1], delimiter=",", header='Time,Cd,Cl', comments='')
 
