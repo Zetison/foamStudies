@@ -9,10 +9,10 @@ cd $pathToFolder
 nu="1.0e-02"     # kinematic viscosity
 #nu="18.6e-06"   # kinematic viscosity of air at 25°C
 #nu="18.6e-05"   # kinematic viscosity of air at 25°C
-end_time=1000    # End time for simulation
 np=4             # Number of processors
 D=1.0            # Diameter of cylinder
 M=7            # Mesh number: M = 1, 2, 3, ... (M = 7 is the standard mesh)
+end_time=1000    # End time for simulation
 delta_t="0.05"   # Discretization time step
 omega_rot=0.0  # Angular velocity of cylinder rotation
 u_inf=1.0        # incident velocity speed

@@ -5,6 +5,8 @@ Re=100
 M=7
 N=$((2**($M-1)))
 N2=$((2*N))
+end_time=1000    # End time for simulation
+delta_t=0.05   # Discretization time step
 nRe=10
 t=4.0
 scriptLoc=$(pwd)
@@ -15,7 +17,7 @@ cd $outputFolder
 beta=$(grep -oP '(?<=beta )[0-9]+\.[0-9]+' ~/OpenFOAM/OpenFOAM-v1912/run/cylinder/constant/parameters)
 NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
 GENERATOR=$HOME/kode/meshscripts/cylinder/cylinder.py
-NP=2
+NP=4
 NT=2
 
 STRIDE=10
@@ -45,9 +47,9 @@ then
       mkdir -p $dir/$FORM
       if test "$FORM" = "chorin"
       then
-        sed -e "s/STRIDE/$STRIDE/g" -e "s/FORM/$FORM/g" -e "s/REYNOLDS/$Re/g" -e "s/NGAUSS/$NGAUSS/g" Cylinder2D_chorin-template.xinp > $dir/$FORM/Cyl2D-Re$Re.xinp
+        sed -e "s/DELTA_T/$delta_t/g" -e "s/END_TIME/$end_time/g" -e "s/STRIDE/$STRIDE/g" -e "s/FORM/$FORM/g" -e "s/REYNOLDS/$Re/g" -e "s/NGAUSS/$NGAUSS/g" Cylinder2D_chorin-template.xinp > $dir/$FORM/Cyl2D-Re$Re.xinp
       else
-        sed -e "s/STRIDE/$STRIDE/g" -e "s/FORM/$FORM/g" -e "s/REYNOLDS/$Re/g" -e "s/NGAUSS/$NGAUSS/g" Cylinder2D-template.xinp > $dir/$FORM/Cyl2D-Re$Re.xinp
+        sed -e "s/DELTA_T/$delta_t/g" -e "s/END_TIME/$end_time/g" -e "s/STRIDE/$STRIDE/g" -e "s/FORM/$FORM/g" -e "s/REYNOLDS/$Re/g" -e "s/NGAUSS/$NGAUSS/g" Cylinder2D-template.xinp > $dir/$FORM/Cyl2D-Re$Re.xinp
       fi
       cp $dir/cyl2D.xinp $dir/cyl2D.g2 $dir/$FORM
     done

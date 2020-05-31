@@ -55,5 +55,5 @@
     <stride>STRIDE</stride>
   </postprocessing>
 
-  <timestepping start="0" end="150" dt="0.05" type="bdf2"/>
+  <timestepping start="0" end="END_TIME" dt="DELTA_T" type="bdf2"/>
 </simulation>
