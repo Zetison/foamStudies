@@ -15,7 +15,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "../constant/parameters"
+epsilon_0 SED_EPSILON_0;
 
 dimensions [0 2 -3 0 0 0 0];
 
@@ -41,16 +41,16 @@ boundaryField
 		value $internalField;
 	}
 
-	cylinder
+	SED_MODEL_NAME
 	{
 		type  epsilonWallFunction;
 		value uniform $epsilon_0;
 	}
   
 	frontAndBack
-  {
+	{
 		type empty;
-  }
+	}
 }
 
 

@@ -1,42 +1,66 @@
 #!/bin/sh
-name=${1:-cylinder}
+MODEL_NAME="cylinder"
+name=${1:-$MODEL_NAME}
 pathToFolder="$HOME/OpenFOAM/OpenFOAM-v1912/run/$name"
-rm -r -f $pathToFolder
+rm -rf $pathToFolder/*
 mkdir -p $pathToFolder
 cp -r ./* $pathToFolder
 cd $pathToFolder
 
-nu="1.0e-02"     # kinematic viscosity
-#nu="18.6e-06"   # kinematic viscosity of air at 25°C
-#nu="18.6e-05"   # kinematic viscosity of air at 25°C
-np=4             # Number of processors
-D=1.0            # Diameter of cylinder
-M=7            # Mesh number: M = 1, 2, 3, ... (M = 7 is the standard mesh)
-end_time=1000    # End time for simulation
-delta_t="0.05"   # Discretization time step
-omega_rot=0.0  # Angular velocity of cylinder rotation
-u_inf=1.0        # incident velocity speed
-nRe_0=10 				 # minimum number of elements withing D/sqrt(Re) outside cylinder
-bdD=64           # ratio between height of domain and diameter of cylinder
-#bdD=16           # ratio between height of domain and diameter of cylinder
+NU=0.01     			# kinematic viscosity
+NP=3             	# Number of processors
+MESH=7            # Mesh number: MESH = 1, 2, 3, ...
+END_TIME=1000     # End time for simulation
+DIAM=1.0          # Diameter of cylinder
+LENGTH=1.0        # Length of cylinder
+DELTA_T=0.05      # Discretization time step
+OMEGA_ROT=0.0     # Angular velocity of cylinder rotation
+U_INF=1.0         # incident velocity speed
+NRE_0=10 				  # minimum number of elements withing D/sqrt(Re) outside cylinder
+BDD=64            # ratio between height of domain and diameter of cylinder
+WRITE_INTERVAL=10  # Writes data every writeInterval time steps
+PURGE_WRITE=0     # Integer representing a limit on the number of time directories 
+                  # that are stored by overwriting time directories on a cyclic basis
+
+LREF=$LENGTH
+AREF=$(echo "$DIAM*$LENGTH" | bc -l)
+Um=$(echo "0.05*$U_INF" | bc -l)
+l=$(echo "0.2*$DIAM" | bc -l)
+K_0=$(echo "3/2*$Um^2" | bc -l)
+C=0.16431676725 #0.09^0.75
+EPSILON_0=$(echo "$C*sqrt($K_0^3)/$l" | bc -l)
+OMEGA_0=$(echo "sqrt($K_0)/$l" | bc -l)
+NUT_0=$(echo "0.09*$K_0^2/$EPSILON_0" | bc -l)
+RE=$(echo "sqrt($U_INF^2)*$DIAM/$NU" | bc -l)
+
+# DICTS contains the set of files at which we want to replace the variables in SED_VARIABLES
+DICTS="0/epsilon 0/k 0/nut 0/nuTilda 0/omega 0/p 0/s 0/U \
+       constant/transportProperties \
+       system/blockMeshDict system/decomposeParDict system/controlDict \
+			 postProcScript.py generate_blockMeshDict_file.c"
+
+SED_VARIABLES="BDD DIAM LENGTH NRE_0 RE MESH OMEGA_ROT \
+							 NP END_TIME DELTA_T U_INF AREF LREF \
+							 EPSILON_0 K_0 NUT_0 OMEGA_0 NU MODEL_NAME WRITE_INTERVAL PURGE_WRITE"
+
+for DICT in $DICTS 
+do
+	for SED_VARIABLE in $SED_VARIABLES
+	do
+		eval "SED_VARIABLE_VALUE=\$$SED_VARIABLE"
+		sed -i "s/SED_$SED_VARIABLE/$SED_VARIABLE_VALUE/g" $DICT
+	done
+done
+
+
 g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file
-./generate_blockMeshDict_file $D $nu $M $nRe_0 $np $omega_rot $u_inf $delta_t $end_time $bdD
+./generate_blockMeshDict_file
 blockMesh
 
-#pisoFoam
-
 decomposePar
-mpirun -np $np pisoFoam -parallel
-reconstructPar
-postProcess -func vorticity
+mpirun -np $NP pisoFoam -parallel
+
 python3.7 convertDatToCSV.py
-python3.7 exportResults.py && cat results.txt 
+python3.7 exportResults.py && cat results_OF.txt 
 paraFoam --script=postProcScript.py
 
-#cd system && mv blockMeshDict temp && mv blockMeshDict_old blockMeshDict && mv temp blockMeshDict_old && cd ..
-
-#for (( n=0; n<$np; n++ ))
-#do
-#  cd processor$n && foamToVTK && cd ..
-#done
-#paraFoam

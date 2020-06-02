@@ -1,7 +1,6 @@
 #### import the simple module from the paraview
 from paraview.simple import *
 import os
-from math import pi
 import numpy as np
 import getpass
 #### disable automatic camera reset on 'Show'
@@ -10,21 +9,12 @@ dir = os.getcwd()
 #### disable automatic camera reset on 'Show'
 paraview.simple._DisableFirstRenderCameraReset()
 
-staticCylinder=False
+staticCylinder=True
 username = getpass.getuser()
 home = '/home/'+username+'/'
 
 # get active view
 renderView1 = GetActiveViewOrCreate('RenderView')
-
-# get active source.
-cylinderfoam = GetActiveSource()
-cylinderfoamDisplay = Show(cylinderfoam, renderView1, 'UnstructuredGridRepresentation')
-cylinderfoamDisplay.SetScalarBarVisibility(renderView1, False)
-
-# destroy cylinderfoam
-Delete(cylinderfoam)
-del cylinderfoam
 
 # get animation scene
 animationScene1 = GetAnimationScene()
@@ -33,9 +23,10 @@ animationScene1 = GetAnimationScene()
 timeKeeper1 = GetTimeKeeper()
 
 # create a new 'OpenFOAMReader'
-cylinderfoam = OpenFOAMReader(FileName=dir+'/cylinder.foam')
-cylinderfoam.MeshRegions = ['internalMesh']
-cylinderfoam.CellArrays = ['vorticity']
+SED_MODEL_NAMEfoam = OpenFOAMReader(FileName=dir+'/SED_MODEL_NAME.foam')
+SED_MODEL_NAMEfoam.CaseType = 'Decomposed Case'
+SED_MODEL_NAMEfoam.MeshRegions = ['internalMesh']
+SED_MODEL_NAMEfoam.CellArrays = ['vorticity']
 
 # update animation scene based on data timesteps
 animationScene1.UpdateAnimationUsingDataTimeSteps()
@@ -58,13 +49,13 @@ SetActiveView(None)
 layout1.SplitVertical(2, 0.5)
 
 # show data in view
-cylinderfoamDisplay = Show(cylinderfoam, renderView1, 'UnstructuredGridRepresentation')
+SED_MODEL_NAMEfoamDisplay = Show(SED_MODEL_NAMEfoam, renderView1, 'UnstructuredGridRepresentation')
 
 # set scalar coloring
-ColorBy(cylinderfoamDisplay, ('POINTS', 'vorticity', 'Magnitude'))
+ColorBy(SED_MODEL_NAMEfoamDisplay, ('POINTS', 'vorticity', 'Magnitude'))
 
 # show color bar/color legend
-cylinderfoamDisplay.SetScalarBarVisibility(renderView1, True)
+SED_MODEL_NAMEfoamDisplay.SetScalarBarVisibility(renderView1, True)
 
 # get opacity transfer function/opacity map for 'Vorticity'
 vorticityLUT = GetColorTransferFunction('vorticity')
@@ -106,13 +97,13 @@ renderView1.Update()
 SetActiveSource(None)
 
 if True: # plot SINTEF logo
-  # create a new 'Logo'
-  logo1 = Logo()
-  SINTEF_white = CreateTexture(home+'OneDrive/work/graphics/logos/SINTEF_white.png')
-  logo1.Texture = SINTEF_white
-  logo1Display = Show(logo1, renderView1, 'LogoSourceRepresentation')
-  logo1Display.Position = [0.84, 0.0]
-  logo1Display.Interactivity = 0
+    # create a new 'Logo'
+    logo1 = Logo()
+    SINTEF_white = CreateTexture(home+'OneDrive/work/graphics/logos/SINTEF_white.png')
+    logo1.Texture = SINTEF_white
+    logo1Display = Show(logo1, renderView1, 'LogoSourceRepresentation')
+    logo1Display.Position = [0.84, 0.0]
+    logo1Display.Interactivity = 0
 
 #############################################################################################################
 ## Add volleyball image

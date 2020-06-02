@@ -49,29 +49,16 @@ void insSubArray(double A[][3], int idx, double x, double y, double z){
 }
 
 int main(int argc, char **argv){
-	double D         = stod(argv[1]);
-	double nu        = stod(argv[2]);
-	int M            = stoi(argv[3]);
-	int N_Re_0        = stoi(argv[4]);
-	int np           = stoi(argv[5]);
-	double omega_rot = stod(argv[6]);
-	double u_inf     = stod(argv[7]);
-	double delta_t   = stod(argv[8]);
-	double end_time  = stod(argv[9]);
-	double bdD       = stod(argv[10]);
+	double D   = SED_DIAM;
+	int M      = SED_MESH;
+	int N_Re_0 = SED_NRE_0;
+	double bdD = SED_BDD;
+	double Re  = SED_RE;
+	double L   = SED_LENGTH;
 
 	double b = bdD*D;
 	double a = 2*b;
 	double t = 4*D;
-	double L = 2*M_PI*D;
-	double U_max = max(u_inf,omega_rot*D/2);
-	double Um = 0.05*U_max;
-	double l = 0.2*a;
-	double k_0 = 3/2.0*Um*Um;
-	double epsilon_0 = pow(0.09,0.75)*pow(k_0,1.5)/l;
-	double omega_0 = sqrt(k_0)/l;
-	double nut_0 = 0.09*k_0*k_0/epsilon_0;
-	double Re = U_max*D/nu;  // Reynolds number
 	int N_Re = N_Re_0*pow(2,(M>7)?(M-7):0);        // Roughly the number of elements
 	                                             // withing D/sqrt(Re) outside the cylinder 
                                                // (should be at least 5)
@@ -80,7 +67,6 @@ int main(int argc, char **argv){
 	double delta_Nr = (a-b)/N;
 	double f, df; // Find beta through Newton iterations
 	double beta = 2.0;
-	cout << "N_Re = " << N_Re << endl;
 	for (size_t i = 0; i < 100; i++)
 	{
 		f = (delta_Nr+(1-beta)*(b-D)/2)*(1-pow(beta,N_Re))-D/sqrt(Re)*(1-beta);
@@ -106,42 +92,6 @@ int main(int argc, char **argv){
 		N_t++;
 	}
 	t = x_i-D/2;
-	cout << "delta_0 = " << delta_0 << endl;
-	cout << "x_t = " << D/2+t << endl;
-	cout << "Re = " << Re << endl;
-	cout << "beta = " << beta << endl;
-	cout << "N_t = " << N_t << endl;
-		
-	ofstream out1("./constant/parameters");
-	out1.precision(15);	
-	printHeader(out1, "2.0", "ascii", "IOobject", "constant", "parameters");
-	out1 << "nu " << nu << ";\n";
-	out1 << "u_inf " << u_inf << ";\n";
-	out1 << "end_time " << end_time << ";\n";
-	out1 << "delta_t " << delta_t << ";\n";
-	out1 << "omega_rot " << omega_rot << ";\n";
-	out1 << "L " << L << ";\n";
-	out1 << "D " << D << ";\n";
-	out1 << "beta " << beta << ";\n";
-	out1 << "k_0 " << k_0 << ";\n";
-	out1 << "epsilon_0 " << epsilon_0 << ";\n";
-	out1 << "omega_0 " << omega_0 << ";\n";
-	out1 << "nut_0 " << nut_0 << ";\n";
-	printFooter(out1);
-	out1.close();
-	
-	ofstream out2("./system/decomposeParDict");
-	out2.precision(15);	
-	printHeader(out2, "2.0", "ascii", "dictionary", "constant", "decomposeParDict");
-	out2 << "numberOfSubdomains " << np << ";\n";
-	out2 << "method simple;\n";
-	out2 << "simpleCoeffs\n";
-	out2 << "{\n";
-	out2 << "\tn (" << np << " 1 1);\n";
-	out2 << "}\n\n";
-	printFooter(out2);
-	out2.close();
-		
 	
 	ofstream out("./system/blockMeshDict");
 	out.precision(15);	

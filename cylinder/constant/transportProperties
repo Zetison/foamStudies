@@ -15,11 +15,9 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "parameters"
-
 transportModel Newtonian;
 
-nu nu [ 0 2 -1 0 0 0 0 ] $nu;
+nu nu [ 0 2 -1 0 0 0 0 ] SED_NU;
 
 CrossPowerLawCoeffs
 {

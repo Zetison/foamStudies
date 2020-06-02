@@ -15,8 +15,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "../constant/parameters"
-
+u_inf SED_U_INF;
 dimensions [0 1 -1 0 0 0 0];
 
 internalField	uniform ($u_inf 0 0);
@@ -51,19 +50,18 @@ boundaryField
 //	  type advective;
 //	}
 	
-//	cylinder
-//	{
-//		type noSlip;
-//		type fixedValue;
-//	}
-	
 	cylinder
 	{
-	  type            rotatingWallVelocity;
-	  origin          ( 0 0 0 );
-	  axis            ( 0 0 1 );
-	  omega           $omega_rot;
+		type noSlip;
 	}
+	
+//	cylinder
+//	{
+//	  type            rotatingWallVelocity;
+//	  origin          ( 0 0 0 );
+//	  axis            ( 0 0 1 );
+//	  omega           SED_OMEGA_ROT;
+//	}
 	
 	frontAndBack
 	{

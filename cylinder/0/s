@@ -39,7 +39,7 @@ boundaryField
 		value      uniform 0;
 	}
 	
-	cylinder
+	SED_MODEL_NAME
 	{
 		type zeroGradient;
 	}

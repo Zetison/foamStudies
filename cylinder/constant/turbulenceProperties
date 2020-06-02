@@ -16,8 +16,9 @@ FoamFile
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 //simulationType  RAS;
-simulationType  LES;
-//simulationType  laminar;
+//simulationType  LES;
+simulationType  laminar;
+
 RAS
 {
 	RASModel                kOmegaSST;

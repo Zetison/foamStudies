@@ -11,11 +11,11 @@ FoamFile
 	format      ascii;
 	class       volScalarField;
 	location    "0";
-  object      k;
+	object      k;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "../constant/parameters"
+k_0 SED_K_0;
 
 dimensions [0 2 -2 0 0 0 0];
 
@@ -27,7 +27,7 @@ boundaryField
 	{
 		type  kqRWallFunction;
 		value uniform $k_0;
-  }
+	}
 
 	inlet
 	{
@@ -41,16 +41,16 @@ boundaryField
 		value $internalField;
 	}
 
-	cylinder
+	SED_MODEL_NAME
 	{
 		type  kqRWallFunction;
 		value uniform $k_0;
 	}
   
 	frontAndBack
-  {
+	{
 		type empty;
-  }
+	}
 }
 
 

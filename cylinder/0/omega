@@ -15,7 +15,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "../constant/parameters"
+omega_0 SED_OMEGA_0;
 
 dimensions [0 0 -1 0 0 0 0];
 
@@ -41,16 +41,16 @@ boundaryField
 		value $internalField;
 	}
 
-	cylinder
+	SED_MODEL_NAME
 	{
 		type  omegaWallFunction;
 		value uniform $omega_0;
 	}
   
 	frontAndBack
-  {
-  	type empty;
-  }
+	{
+		type empty;
+	}
 }
 
 

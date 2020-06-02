@@ -38,15 +38,15 @@ boundaryField
 		type zeroGradient;
 	}
 
-	cylinder
+	SED_MODEL_NAME
 	{
 		type zeroGradient;
 	}
 	
 	frontAndBack
-  {
+	{
 		type empty;
-  }
+	}
 }
 
 // ************************************************************************* //

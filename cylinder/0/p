@@ -15,8 +15,6 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "../constant/parameters"
-
 dimensions [0 2 -2 0 0 0 0];
 
 internalField uniform 0;
@@ -36,18 +34,18 @@ boundaryField
 	outlet
 	{
 		type  fixedValue;
-		value	$internalField;
+		value $internalField;
 	}
 	
-	cylinder
+	SED_MODEL_NAME
 	{
 		type zeroGradient;
 	}
 	   
-  frontAndBack
-  {
+	frontAndBack
+	{
 		type empty;
-  }
+	}
 }
 
 // ************************************************************************* //

@@ -15,11 +15,11 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 4;
+numberOfSubdomains SED_NP;
 method simple;
 simpleCoeffs
 {
-	n (4 1 1);
+	n (SED_NP 1 1);
 }
 
 

@@ -15,8 +15,6 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "../constant/parameters"
-
 application     pisoFoam;
 
 startFrom       startTime;
@@ -25,23 +23,17 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         $end_time;
+endTime         SED_END_TIME;
 
-deltaT          $delta_t;
-
-//maxCo           0.5; // Or other Courant number you wish
+deltaT          SED_DELTA_T;
 
 adjustTimeStep  no; // yes or no 
 
-//writeControl    adjustableRunTime;
 writeControl    runTime;
-//writeControl    timeStep;
 
-writeInterval   0.1;
-//timeInterval    1;
-//writeFrequency  1;
+writeInterval   SED_WRITE_INTERVAL;
 
-purgeWrite      0; //number of existing direcories at any time (0 = disable)
+purgeWrite      SED_PURGE_WRITE; //number of existing direcories at any time (0 = disable)
 
 writeFormat     binary; //or ascii
 
@@ -49,7 +41,7 @@ writePrecision  6;
 
 timeFormat      general;
 
-timePrecision   13;
+timePrecision   6;
 
 runTimeModifiable true;
 
@@ -63,7 +55,7 @@ functions
 	{
 		type    forceCoeffs;
 		libs    (forces);
-		patches (cylinder);
+		patches (SED_MODEL_NAME);
 
 		log no; //no or yes
 		
@@ -77,8 +69,15 @@ functions
 		dragDir     (1 0 0);
 		CofR        (0 0 0);
 		pitchAxis   (0 0 1);
-		magUInf     $u_inf;
-		lRef        $L;
-		Aref        #calc "$L*$D";
+		magUInf     SED_U_INF;
+		lRef        SED_LREF;
+		Aref        SED_AREF;
+	}
+
+	vorticity
+	{
+		type vorticity;
+		libs (fieldFunctionObjects);
+		log no; //no or yes
 	}
 }
