@@ -55,6 +55,8 @@ int main(int argc, char **argv){
 	double bdD = SED_BDD;
 	double Re  = SED_RE;
 	double L   = SED_LENGTH;
+	string str(argv[0]);
+	bool createFile = str.compare("openfoam") == 0;
 
 	double b = bdD*D;
 	double a = 2*b;
@@ -81,6 +83,11 @@ int main(int argc, char **argv){
 		df = -D/sqrt(Re)*N_r*pow(beta,N_r-1) + (b-D)/2*N_Re*pow(beta,N_Re-1);
 		beta -= f/df;
 	}
+	if (!createFile)
+	{
+		cout << beta;
+		return 0;
+	}
 	delta_0 = 0.5*(b-D)*(1-beta)/(1-pow(beta,N_r));
 	double x_i = D/2;
 	int N_t = 0;
@@ -92,169 +99,171 @@ int main(int argc, char **argv){
 		N_t++;
 	}
 	t = x_i-D/2;
-	
-	ofstream out("./system/blockMeshDict");
-	out.precision(15);	
-	printHeader(out, "2.0", "ascii", "dictionary", "system", "blockMeshDict");
-	out << "vertices\n";
-	out << "(\n";
-	const int n = 14; 
-	double points[2*n][3];
-	int counter = 0;
-	double theta;
-	double r[2] = { D/2, t+D/2 };
-	for (size_t i = 0; i < 2; i++)
+	if (createFile)
 	{
-		for (size_t j = 0; j < 4; j++)
+		ofstream out("./system/blockMeshDict");
+		out.precision(15);	
+		printHeader(out, "2.0", "ascii", "dictionary", "system", "blockMeshDict");
+		out << "vertices\n";
+		out << "(\n";
+		const int n = 14; 
+		double points[2*n][3];
+		int counter = 0;
+		double theta;
+		double r[2] = { D/2, t+D/2 };
+		for (size_t i = 0; i < 2; i++)
 		{
-			theta = (j+1/2.0)*M_PI/2;
-			insSubArray(points, counter++, r[i]*cos(theta), r[i]*sin(theta), 0);
-		}
-	}
-	double x[3] = {-b/2, b/2, a-b/2 };
-	double y[2] = {-b/2, b/2 };
-	double R;
-	for (size_t j = 0; j < 2; j++)
-	{
-		for (size_t i = 0; i < 3; i++)
-		{
-			R = sqrt(x[i]*x[i]+y[j]*y[j]);
-			if (R > 1.1*r[1])
-				insSubArray(points, counter++, x[i], y[j], 0);
-		}
-	}
-	// Duplicate z points
-	for (size_t i = 0; i < n; i++)
-		insSubArray(points, i+n, points[i][0], points[i][1], L);
-	
-	printArray(out,points,2*n,3, "\t");
-	out << ");\n";
-	out << "\n";
-	out << "blocks\n";
-	out << "(\n";
-	const int nb = 9;
-	int ref[5] = {N_t,
-	              N,
-	              N_r-N_t,
-	              (int)round(N*(a-b)/b), 
-	              1};
-	int idx[n][4] = { {3, 7, 4, 0},      // 0
-	                   {0, 4, 5, 1},     // 1
-	                   {1, 5, 6, 2},     // 2
-	                   {2, 6, 7 ,3},     // 3
-	                   {7, 9, 12, 4},    // 4
-	                   {4, 12, 11, 5},   // 5
-	                   {5, 11, 8, 6},    // 6
-	                   {6, 8, 9, 7},     // 7
-	                   {9, 10, 13, 12}}; // 8
-	for (size_t i = 0; i < nb; i++)
-	{
-		out << "\thex (";
-		for (size_t k = 0; k < 2; k++)
 			for (size_t j = 0; j < 4; j++)
-				out << idx[i][j]+n*k << " ";
-		out << ") (";
-		if (i < 4)
-			out << ref[0] << " " << ref[1] << " " << ref[4] << ") simpleGrading (" << pow(beta,N_t-1) << " 1 1)\n"; 
-		else if (i < 8)
-			out << ref[2] << " " << ref[1] << " " << ref[4] << ") simpleGrading (" << pow(beta,N_r-N_t-1) << " 1 1)\n"; 
-		else
-			out << ref[3] << " " << ref[1] << " " << ref[4] << ") simpleGrading (1 1 1)\n"; 
-	}
-	out << ");\n";
-	out << "\n";
-	out << "edges\n";
-	out << "(\n";
-	for (size_t k = 0; k < 2; k++)
-	{
-		for (size_t i = 0; i < 4; i++)
-		{
-			theta = (i+1)*M_PI/2;
-			for (size_t j = 0; j < 2; j++)
 			{
-				out << "\tarc " << i+k*n+4*j << " ";
-				if (i == 3)
-					out << k*n+4*j;
-				else 
-					out << i+1+k*n+4*j;
-				out << " (" << (D/2+j*t)*cos(theta) << " " << (D/2+j*t)*sin(theta) << " " << k*L << ")\n";
+				theta = (j+1/2.0)*M_PI/2;
+				insSubArray(points, counter++, r[i]*cos(theta), r[i]*sin(theta), 0);
 			}
 		}
-	}
-	out << ");\n";
-	out << "\n";
-	out << "boundary\n";
-	out << "(\n";
-	out << "\tinlet\n";
-	out << "\t{\n";
-	out << "\t\ttype wall;\n";
-	out << "\t\tfaces\n";
-	out << "\t\t(\n";
-	out << "\t\t\t( 11 8 22 25 )\n";
-	out << "\t\t);\n";
-	out << "\t}\n";
-	
-	out << "\toutlet\n";
-	out << "\t{\n";
-	out << "\t\ttype wall;\n";
-	out << "\t\tfaces\n";
-	out << "\t\t(\n";
-	out << "\t\t\t( 10 13 27 24 )\n";
-	out << "\t\t);\n";
-	out << "\t}\n";
-	
-	out << "\twalls\n";
-	out << "\t{\n";
-	out << "\t\ttype wall;\n";
-	out << "\t\tfaces\n";
-	out << "\t\t(\n";
-	out << "\t\t\t( 12 11 25 26 )\n";
-	out << "\t\t\t( 13 12 26 27 )\n";
-	out << "\t\t\t( 8 9 23 22 )\n";
-	out << "\t\t\t( 9 10 24 23 )\n";
-	out << "\t\t);\n";
-	out << "\t}\n";
-	
-	out << "\tcylinder\n";
-	out << "\t{\n";
-	out << "\t\ttype wall;\n";
-	out << "\t\tfaces\n";
-	out << "\t\t(\n";
-	out << "\t\t\t( 0 3 17 14 )\n";
-	out << "\t\t\t( 1 0 14 15 )\n";
-	out << "\t\t\t( 2 1 15 16 )\n";
-	out << "\t\t\t( 3 2 16 17 )\n";
-	out << "\t\t);\n";
-	out << "\t}\n";
-	
-	out << "\tfrontAndBack\n";
-	out << "\t{\n";
-	out << "\t\ttype empty;\n";
-	out << "\t\tfaces\n";
-	out << "\t\t(\n";
-	for (size_t k = 0; k < 2; k++)
-	{
+		double x[3] = {-b/2, b/2, a-b/2 };
+		double y[2] = {-b/2, b/2 };
+		double R;
+		for (size_t j = 0; j < 2; j++)
+		{
+			for (size_t i = 0; i < 3; i++)
+			{
+				R = sqrt(x[i]*x[i]+y[j]*y[j]);
+				if (R > 1.1*r[1])
+					insSubArray(points, counter++, x[i], y[j], 0);
+			}
+		}
+		// Duplicate z points
+		for (size_t i = 0; i < n; i++)
+			insSubArray(points, i+n, points[i][0], points[i][1], L);
+		
+		printArray(out,points,2*n,3, "\t");
+		out << ");\n";
+		out << "\n";
+		out << "blocks\n";
+		out << "(\n";
+		const int nb = 9;
+		int ref[5] = {N_t,
+		              N,
+		              N_r-N_t,
+		              (int)round(N*(a-b)/b), 
+		              1};
+		int idx[n][4] = { {3, 7, 4, 0},      // 0
+		                   {0, 4, 5, 1},     // 1
+		                   {1, 5, 6, 2},     // 2
+		                   {2, 6, 7 ,3},     // 3
+		                   {7, 9, 12, 4},    // 4
+		                   {4, 12, 11, 5},   // 5
+		                   {5, 11, 8, 6},    // 6
+		                   {6, 8, 9, 7},     // 7
+		                   {9, 10, 13, 12}}; // 8
 		for (size_t i = 0; i < nb; i++)
 		{
-			out << "\t\t\t( ";
-			for (size_t j = 0; j < 4; j++)
-			{
-				if (k == 0)
-				  out << idx[i][3-j] << " ";
-				else
-				  out << idx[i][j]+n*k << " ";
-			}
-			out << ")\n";
+			out << "\thex (";
+			for (size_t k = 0; k < 2; k++)
+				for (size_t j = 0; j < 4; j++)
+					out << idx[i][j]+n*k << " ";
+			out << ") (";
+			if (i < 4)
+				out << ref[0] << " " << ref[1] << " " << ref[4] << ") simpleGrading (" << pow(beta,N_t-1) << " 1 1)\n"; 
+			else if (i < 8)
+				out << ref[2] << " " << ref[1] << " " << ref[4] << ") simpleGrading (" << pow(beta,N_r-N_t-1) << " 1 1)\n"; 
+			else
+				out << ref[3] << " " << ref[1] << " " << ref[4] << ") simpleGrading (1 1 1)\n"; 
 		}
+		out << ");\n";
+		out << "\n";
+		out << "edges\n";
+		out << "(\n";
+		for (size_t k = 0; k < 2; k++)
+		{
+			for (size_t i = 0; i < 4; i++)
+			{
+				theta = (i+1)*M_PI/2;
+				for (size_t j = 0; j < 2; j++)
+				{
+					out << "\tarc " << i+k*n+4*j << " ";
+					if (i == 3)
+						out << k*n+4*j;
+					else 
+						out << i+1+k*n+4*j;
+					out << " (" << (D/2+j*t)*cos(theta) << " " << (D/2+j*t)*sin(theta) << " " << k*L << ")\n";
+				}
+			}
+		}
+		out << ");\n";
+		out << "\n";
+		out << "boundary\n";
+		out << "(\n";
+		out << "\tinlet\n";
+		out << "\t{\n";
+		out << "\t\ttype wall;\n";
+		out << "\t\tfaces\n";
+		out << "\t\t(\n";
+		out << "\t\t\t( 11 8 22 25 )\n";
+		out << "\t\t);\n";
+		out << "\t}\n";
+		
+		out << "\toutlet\n";
+		out << "\t{\n";
+		out << "\t\ttype wall;\n";
+		out << "\t\tfaces\n";
+		out << "\t\t(\n";
+		out << "\t\t\t( 10 13 27 24 )\n";
+		out << "\t\t);\n";
+		out << "\t}\n";
+		
+		out << "\twalls\n";
+		out << "\t{\n";
+		out << "\t\ttype wall;\n";
+		out << "\t\tfaces\n";
+		out << "\t\t(\n";
+		out << "\t\t\t( 12 11 25 26 )\n";
+		out << "\t\t\t( 13 12 26 27 )\n";
+		out << "\t\t\t( 8 9 23 22 )\n";
+		out << "\t\t\t( 9 10 24 23 )\n";
+		out << "\t\t);\n";
+		out << "\t}\n";
+		
+		out << "\tcylinder\n";
+		out << "\t{\n";
+		out << "\t\ttype wall;\n";
+		out << "\t\tfaces\n";
+		out << "\t\t(\n";
+		out << "\t\t\t( 0 3 17 14 )\n";
+		out << "\t\t\t( 1 0 14 15 )\n";
+		out << "\t\t\t( 2 1 15 16 )\n";
+		out << "\t\t\t( 3 2 16 17 )\n";
+		out << "\t\t);\n";
+		out << "\t}\n";
+		
+		out << "\tfrontAndBack\n";
+		out << "\t{\n";
+		out << "\t\ttype empty;\n";
+		out << "\t\tfaces\n";
+		out << "\t\t(\n";
+		for (size_t k = 0; k < 2; k++)
+		{
+			for (size_t i = 0; i < nb; i++)
+			{
+				out << "\t\t\t( ";
+				for (size_t j = 0; j < 4; j++)
+				{
+					if (k == 0)
+					  out << idx[i][3-j] << " ";
+					else
+					  out << idx[i][j]+n*k << " ";
+				}
+				out << ")\n";
+			}
+		}
+		out << "\t\t);\n";
+		out << "\t}\n";
+		out << ");\n";
+		out << "\n";
+		out << "mergePatchPairs\n";
+		out << "(\n";
+		out << ");\n";
+		printFooter(out);
+		out.close();
 	}
-	out << "\t\t);\n";
-	out << "\t}\n";
-	out << ");\n";
-	out << "\n";
-	out << "mergePatchPairs\n";
-	out << "(\n";
-	out << ");\n";
-	printFooter(out);
-	out.close();
 	return 0;
 }

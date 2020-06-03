@@ -2,25 +2,25 @@
 D=1.0
 b=64.0
 Re=100
-M=7
-N=$((2**($M-1)))
-N2=$((2*N))
+MESH=7
+nel=$((2**($MESH-1)))
 end_time=1000    # End time for simulation
 delta_t=0.05   # Discretization time step
 nRe=10
 t=4.0
+NP=2
+NT=2
+STRIDE=10
 scriptLoc=$(pwd)
 outputFolder=$HOME/hugeFiles/IFEM/cylinder
-cp Cylinder2D_chorin-template.xinp $outputFolder
-cp Cylinder2D-template.xinp $outputFolder
-cd $outputFolder 
-beta=$(grep -oP '(?<=beta )[0-9]+\.[0-9]+' ~/OpenFOAM/OpenFOAM-v1912/run/cylinder/constant/parameters)
+cp Cylinder2D_chorin-template.xinp Cylinder2D-template.xinp generate_blockMeshDict_file.c sed_parameters $outputFolder
+cd $outputFolder
+
+./sed_parameters $NP "ifem"
+g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file 
+beta=$(./generate_blockMeshDict_file "ifem")
 NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
 GENERATOR=$HOME/kode/meshscripts/cylinder/cylinder.py
-NP=4
-NT=2
-
-STRIDE=10
 
 GENERATE=$1
 RUN=$2
@@ -33,7 +33,7 @@ then
     mkdir -p $dir
     pushd $dir > /dev/null
     echo "Generating model for p=$p"
-		python3.7 $GENERATOR --diam=$D --width=$b --front=$b --thickness=$t --back=192.0 --side=$b --height=0.0 --Re=$Re --grad=$beta --nel-bndl=$nRe --nel-circ=$N --nel-height=1 --order=$((p+1)) --no-outer-graded --out cyl2D
+		python3.7 $GENERATOR --diam=$D --width=$b --front=$b --thickness=$t --back=192.0 --side=$b --height=0.0 --Re=$Re --grad=$beta --nel-bndl=$nRe --nel-circ=$nel --nel-height=1 --order=$((p+1)) --no-outer-graded --out cyl2D
     popd > /dev/null
 
 

@@ -52,7 +52,8 @@
   </discretization>
 
   <postprocessing>
-    <stride>STRIDE</stride>
+		<primarySolOnly/>
+		<stride>STRIDE</stride>
   </postprocessing>
 
   <timestepping start="0" end="END_TIME" dt="DELTA_T" type="bdf2"/>
