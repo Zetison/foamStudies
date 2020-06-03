@@ -2,7 +2,7 @@
 <simulation>
   <include>cyl2D.xinp</include>
 
-  <navierstokes formulation="FORM">
+  <navierstokes formulation="SED_FORM">
     <boundaryconditions>
       <dirichlet set="inflow" comp="1" type="expression">if(below(t,1.0),t,1.0)</dirichlet>
       <dirichlet set="inflow" comp="2" type="expression">0.02*if(below(t,1.0),1.0,0.0)</dirichlet>
@@ -11,7 +11,7 @@
     </boundaryconditions>
 
     <boundaryforce set="cylinder" file="Cyl2D_force.dat" stride="1"/>
-    <fluidproperties type="reynolds" rho="1.0" Re="REYNOLDS"/>
+    <fluidproperties type="reynolds" rho="1.0" Re="SED_RE"/>
     <formulation>stress</formulation>
   </navierstokes>
 
@@ -22,13 +22,13 @@
   </linearsolver>
 
   <discretization>
-    <nGauss>NGAUSS</nGauss>
+    <nGauss>SED_NGAUSS</nGauss>
   </discretization>
 
   <postprocessing>
 		<primarySolOnly/>
-		<stride>STRIDE</stride>
+		<stride>SED_STRIDE</stride>
   </postprocessing>
 
-  <timestepping start="0" end="150" dt="0.05" type="cn"/>
+  <timestepping start="SED_START_TIME" end="SED_END_TIME" dt="SED_DELTA_T" type="cn"/>
 </simulation>

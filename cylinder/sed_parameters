@@ -3,6 +3,7 @@ MODEL_NAME="$1"
 NU=0.01     			# kinematic viscosity
 NP=$2            	# Number of processors
 MESH=7            # Mesh number: MESH = 1, 2, 3, ...
+START_TIME=0      # Start time for simulation
 END_TIME=1000     # End time for simulation
 DIAM=1.0          # Diameter of cylinder
 LENGTH=1.0        # Length of cylinder
@@ -15,6 +16,7 @@ WRITE_INTERVAL=10  # Writes data every writeInterval time steps
 PURGE_WRITE=0     # Integer representing a limit on the number of time directories 
                   # that are stored by overwriting time directories on a cyclic basis
 
+STRIDE=$WRITE_INTERVAL									
 LREF=$LENGTH
 AREF=$(echo "$DIAM*$LENGTH" | bc -l)
 Um=$(echo "0.05*$U_INF" | bc -l)
@@ -25,7 +27,7 @@ EPSILON_0=$(echo "$C*sqrt($K_0^3)/$l" | bc -l)
 OMEGA_0=$(echo "sqrt($K_0)/$l" | bc -l)
 NUT_0=$(echo "0.09*$K_0^2/$EPSILON_0" | bc -l)
 RE=$(echo "sqrt($U_INF^2)*$DIAM/$NU" | bc -l)
-
+echo $EPSILON_0
 # DICTS contains the set of files at which we want to replace the variables in SED_VARIABLES
 if [[ $3 == "openfoam" ]]; then
 	DICTS="0/epsilon 0/k 0/nut 0/nuTilda 0/omega 0/p 0/s 0/U \
@@ -36,8 +38,8 @@ else
 	DICTS="generate_blockMeshDict_file.c"
 fi
 SED_VARIABLES="BDD DIAM LENGTH NRE_0 RE MESH OMEGA_ROT \
-							 NP END_TIME DELTA_T U_INF AREF LREF \
-							 EPSILON_0 K_0 NUT_0 OMEGA_0 NU MODEL_NAME WRITE_INTERVAL PURGE_WRITE"
+							 NP START_TIME END_TIME DELTA_T U_INF AREF LREF \
+							 EPSILON_0 K_0 NUT_0 OMEGA_0 NU MODEL_NAME WRITE_INTERVAL PURGE_WRITE STRIDE"
 
 for DICT in $DICTS 
 do

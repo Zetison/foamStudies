@@ -4,8 +4,6 @@ b=64.0
 Re=100
 MESH=7
 nel=$((2**($MESH-1)))
-end_time=1000    # End time for simulation
-delta_t=0.05   # Discretization time step
 nRe=10
 t=4.0
 NP=2
@@ -47,9 +45,9 @@ then
       mkdir -p $dir/$FORM
       if test "$FORM" = "chorin"
       then
-        sed -e "s/DELTA_T/$delta_t/g" -e "s/END_TIME/$end_time/g" -e "s/STRIDE/$STRIDE/g" -e "s/FORM/$FORM/g" -e "s/REYNOLDS/$Re/g" -e "s/NGAUSS/$NGAUSS/g" Cylinder2D_chorin-template.xinp > $dir/$FORM/Cyl2D-Re$Re.xinp
+        sed -e "s/SED_FORM/$FORM/g" -e "s/SED_NGAUSS/$NGAUSS/g" Cylinder2D_chorin-template.xinp > $dir/$FORM/Cyl2D-Re$Re.xinp
       else
-        sed -e "s/DELTA_T/$delta_t/g" -e "s/END_TIME/$end_time/g" -e "s/STRIDE/$STRIDE/g" -e "s/FORM/$FORM/g" -e "s/REYNOLDS/$Re/g" -e "s/NGAUSS/$NGAUSS/g" Cylinder2D-template.xinp > $dir/$FORM/Cyl2D-Re$Re.xinp
+        sed -e "s/SED_FORM/$FORM/g" -e "s/SED_NGAUSS/$NGAUSS/g" Cylinder2D-template.xinp > $dir/$FORM/Cyl2D-Re$Re.xinp
       fi
       cp $dir/cyl2D.xinp $dir/cyl2D.g2 $dir/$FORM
     done

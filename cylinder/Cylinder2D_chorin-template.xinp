@@ -2,10 +2,10 @@
 <simulation>
   <include>cyl2D.xinp</include>
 
-  <navierstokes formulation="FORM"/>
+  <navierstokes formulation="SED_FORM"/>
   <chorin>
     <boundaryforce set="cylinder" file="Cyl2D_force.dat" stride="1"/>
-    <fluidproperties type="reynolds" rho="1.0" Re="REYNOLDS"/>
+    <fluidproperties type="reynolds" rho="1.0" Re="SED_RE"/>
   </chorin>
 
   <velocityprediction>
@@ -48,13 +48,13 @@
   </velocitycorrection>
 
   <discretization>
-    <nGauss>NGAUSS</nGauss>
+    <nGauss>SED_NGAUSS</nGauss>
   </discretization>
 
   <postprocessing>
 		<primarySolOnly/>
-		<stride>STRIDE</stride>
+		<stride>SED_STRIDE</stride>
   </postprocessing>
 
-  <timestepping start="0" end="END_TIME" dt="DELTA_T" type="bdf2"/>
+  <timestepping start="SED_START_TIME" end="SED_END_TIME" dt="SED_DELTA_T" type="bdf2"/>
 </simulation>
