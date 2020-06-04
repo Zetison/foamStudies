@@ -31,7 +31,7 @@ then
     mkdir -p $dir
     pushd $dir > /dev/null
     echo "Generating model for p=$p"
-		python3.7 $GENERATOR --diam=$D --width=$b --front=$b --thickness=$t --back=192.0 --side=$b --height=0.0 --Re=$Re --grad=$beta --nel-bndl=$nRe --nel-circ=$nel --nel-height=1 --order=$((p+1)) --no-outer-graded --out cyl2D
+		python3 $GENERATOR --diam=$D --width=$b --front=$b --thickness=$t --back=192.0 --side=$b --height=0.0 --Re=$Re --grad=$beta --nel-bndl=$nRe --nel-circ=$nel --nel-height=1 --order=$((p+1)) --no-outer-graded --out cyl2D
     popd > /dev/null
 
 

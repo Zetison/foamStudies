@@ -2,12 +2,12 @@
 MODEL_NAME="$1"
 NU=0.01     			# kinematic viscosity
 NP=$2            	# Number of processors
-MESH=7            # Mesh number: MESH = 1, 2, 3, ...
+MESH=8            # Mesh number: MESH = 1, 2, 3, ...
 START_TIME=0      # Start time for simulation
 END_TIME=1000     # End time for simulation
 DIAM=1.0          # Diameter of cylinder
 LENGTH=1.0        # Length of cylinder
-DELTA_T=0.05      # Discretization time step
+DELTA_T=0.01      # Discretization time step
 OMEGA_ROT=0.0     # Angular velocity of cylinder rotation
 U_INF=1.0         # incident velocity speed
 NRE_0=10 				  # minimum number of elements withing D/sqrt(Re) outside cylinder
@@ -35,7 +35,7 @@ if [[ $3 == "openfoam" ]]; then
        system/blockMeshDict system/decomposeParDict system/controlDict \
 			 postProcScript.py generate_blockMeshDict_file.c"
 else
-	DICTS="generate_blockMeshDict_file.c"
+	DICTS="generate_blockMeshDict_file.c Cylinder2D-template.xinp Cylinder2D_chorin-template.xinp"
 fi
 SED_VARIABLES="BDD DIAM LENGTH NRE_0 RE MESH OMEGA_ROT \
 							 NP START_TIME END_TIME DELTA_T U_INF AREF LREF \

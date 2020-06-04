@@ -19,7 +19,8 @@ numberOfSubdomains SED_NP;
 method simple;
 simpleCoeffs
 {
-	n (SED_NP 1 1);
+	n     (SED_NP 1 1);
+	delta 0.001;
 }
 
 
