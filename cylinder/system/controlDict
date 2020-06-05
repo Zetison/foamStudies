@@ -29,11 +29,11 @@ deltaT          SED_DELTA_T;
 
 adjustTimeStep  no; // yes or no 
 
-writeControl    runTime;
+writeControl    timeStep;
 
 writeInterval   SED_WRITE_INTERVAL;
 
-purgeWrite      SED_PURGE_WRITE; //number of existing direcories at any time (0 = disable)
+//purgeWrite      SED_PURGE_WRITE; //number of existing direcories at any time (0 = disable)
 
 writeFormat     binary; //or ascii
 
@@ -79,5 +79,7 @@ functions
 		type vorticity;
 		libs (fieldFunctionObjects);
 		log no; //no or yes
+		writeControl timeStep;
+		writeInterval SED_WRITE_INTERVAL;
 	}
 }

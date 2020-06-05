@@ -9,12 +9,15 @@ dir = os.getcwd()
 #### disable automatic camera reset on 'Show'
 paraview.simple._DisableFirstRenderCameraReset()
 
+axisLabelFontSize=13
+fontSize=18
 staticCylinder=True
 username = getpass.getuser()
 home = '/home/'+username+'/'
 
 # get active view
 renderView1 = GetActiveViewOrCreate('RenderView')
+renderView1.ViewSize = [1920, 1080]
 
 # get animation scene
 animationScene1 = GetAnimationScene()
@@ -87,14 +90,16 @@ vorticityLUTColorBar.Orientation = 'Vertical'
 vorticityLUTColorBar.WindowLocation = 'LowerLeftCorner'
 vorticityLUTColorBar.Title = 'Vorticity'
 vorticityLUTColorBar.ComponentTitle = 'magnitude'
+#vorticityLUTColorBar.TitleFontSize = fontSize
+#vorticityLUTColorBar.LabelFontSize = fontSize
+#vorticityLUTColorBar.ScalarBarThickness = 10
+#vorticityLUTColorBar.ScalarBarLength = 0.3
 
 # current camera placement for renderView1
 renderView1.InteractionMode = '2D'
 renderView1.CameraPosition = [5.7899, 0.0, 73.31]
 renderView1.CameraFocalPoint = [5.7899, 0.0, 3.1415]
 renderView1.CameraParallelScale = 8.4728
-renderView1.Update()
-SetActiveSource(None)
 
 if True: # plot SINTEF logo
     # create a new 'Logo'
@@ -144,14 +149,20 @@ else:
 	quartileChartView1.LeftAxisUseCustomRange = 1
 	quartileChartView1.LeftAxisRangeMaximum = 3.0
 	quartileChartView1.LeftAxisRangeMinimum = 0.0
+
 quartileChartView1.ShowLegend = 0
 quartileChartView1.LeftAxisTitle = 'Drag coefficient'
 quartileChartView1.BottomAxisTitle = 'Time [s]'
+#quartileChartView1.LeftAxisTitleFontSize = fontSize
+#quartileChartView1.BottomAxisTitleFontSize = fontSize
+quartileChartView1.LeftAxisLabelFontSize = axisLabelFontSize
+quartileChartView1.BottomAxisLabelFontSize = axisLabelFontSize
 
 # show data in view
 coefficientcsvDisplay_1 = Show(coefficientcsv, quartileChartView1, 'QuartileChartRepresentation')
 coefficientcsvDisplay_1.SeriesVisibility = ['Cd']
 coefficientcsvDisplay_1.SeriesColor = ['Cd', '0', '0', '0']
+quartileChartView1.Update()
 
 # Create a new 'Quartile Chart View'
 quartileChartView2 = CreateView('QuartileChartView')
@@ -164,33 +175,41 @@ if staticCylinder:
 	quartileChartView2.LeftAxisUseCustomRange = 1
 	quartileChartView2.LeftAxisRangeMaximum = 0.4
 	quartileChartView2.LeftAxisRangeMinimum = -0.4
+
 quartileChartView2.ShowLegend = 0
 quartileChartView2.BottomAxisTitle = 'Time [s]'
 quartileChartView2.LeftAxisTitle = 'Lift coefficient'
+#quartileChartView2.LeftAxisTitleFontSize = fontSize
+#quartileChartView2.BottomAxisTitleFontSize = fontSize
+quartileChartView2.LeftAxisLabelFontSize = axisLabelFontSize
+quartileChartView2.BottomAxisLabelFontSize = axisLabelFontSize
 
 # show data in view
 coefficientcsvDisplay_2 = Show(coefficientcsv, quartileChartView2, 'QuartileChartRepresentation')
 coefficientcsvDisplay_2.SeriesVisibility = ['Cl']
 coefficientcsvDisplay_2.SeriesColor = ['Cl', '0', '0', '0']
+quartileChartView2.Update()
+SetActiveView(quartileChartView2)
 
 ####################################################################################################
 # Export visualization
-SetActiveView(renderView1)
+renderView1.Update()
+SetActiveSource(None)
+Render()
 
-RenderAllViews()
-if False:
+if True:
 	# get animation scene
 	SaveAnimation(dir+'/animation.ogv', layout1, 
 	    FontScaling='Scale fonts proportionally',
 	    OverrideColorPalette='',
 	    StereoMode='No change',
-	    TransparentBackground=0,
-      SaveAllViews=1,
+	    TransparentBackground=0, 
+            SaveAllViews=1,
 	    ImageQuality=100,
 	    FrameRate=25,
-      ImageResolution=[1920, 1080],
-      SeparatorWidth=0,
-      SeparatorColor=[1.0, 1.0, 1.0],
-			Quality=2) #,
+            ImageResolution=[1920, 1080],
+            SeparatorWidth=0,
+            SeparatorColor=[1.0, 1.0, 1.0],
+            Quality=2) #,
 #      FrameWindow=[0,10],
 

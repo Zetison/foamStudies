@@ -1,24 +1,29 @@
 #!/bin/bash
 MODEL_NAME="cylinder"
-name=${1:-$MODEL_NAME}
-pathToFolder="$HOME/OpenFOAM/OpenFOAM-v1912/run/$name"
-rm -rf $pathToFolder/*
-mkdir -p $pathToFolder
-cp -r ./* $pathToFolder
-cd $pathToFolder
-
 NP=4    	# Number of processors
-
-./sed_parameters $MODEL_NAME $NP "openfoam" 
-
-g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file
-./generate_blockMeshDict_file "openfoam"
-blockMesh
-
-decomposePar
-mpirun -np $NP pisoFoam -parallel
-
-python3.7 convertDatToCSV.py
-python3.7 exportResults.py && cat results_OF.txt 
-paraview --script=postProcScript.py
-
+name=${1:-$MODEL_NAME}
+for MESH in 8
+do
+	pathToFolder="$HOME/OpenFOAM/OpenFOAM-v1912/run/"$name"_MESH_"$MESH
+	rm -rf $pathToFolder/*
+	mkdir -p $pathToFolder
+	cp -r ./* $pathToFolder
+	
+	pushd $pathToFolder > /dev/null
+	./sed_parameters $MODEL_NAME $NP "openfoam" "$MESH" 
+	
+	g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file
+	./generate_blockMeshDict_file "openfoam"
+	blockMesh
+	
+	decomposePar
+	mpirun -np $NP pisoFoam -parallel
+	
+	python3 convertDatToCSV.py
+	python3 exportResults.py --inputname="postProcessing/forceCoeffs/0/coefficient.dat" --outputname="results_OF_$MESH.txt"
+	cat results_OF_$MESH.txt
+	
+	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py 
+	#paraview --script=postProcScript.py
+	popd > /dev/null
+done

@@ -1,4 +1,6 @@
 #!/bin/bash
+module load openmpi-x86_64
+scl enable devtoolset-8 bash
 D=1.0
 b=64.0
 Re=100
@@ -11,15 +13,17 @@ NT=2
 STRIDE=10
 scriptLoc=$(pwd)
 outputFolder=$HOME/hugeFiles/IFEM/cylinder
-cp Cylinder2D_chorin-template.xinp Cylinder2D-template.xinp generate_blockMeshDict_file.c sed_parameters $outputFolder
+cp Cylinder2D_chorin-template.xinp Cylinder2D-template.xinp generate_blockMeshDict_file.c sed_parameters exportResults.py $outputFolder
 cd $outputFolder
 
-./sed_parameters $NP "ifem"
+./sed_parameters "cylinder" $NP "ifem" $MESH
 g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file 
 beta=$(./generate_blockMeshDict_file "ifem")
-NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
+#NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
+NAVIERSTOKES=/home/akva/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
 GENERATOR=$HOME/kode/meshscripts/cylinder/cylinder.py
-
+#FORMS="chorin mixed mixed-full subgrid"
+FORMS="mixed-full"
 GENERATE=$1
 RUN=$2
 
@@ -40,7 +44,7 @@ then
     then
       NGAUSS=4
     fi
-    for FORM in chorin # mixed mixed-full subgrid
+    for FORM in $FORMS
     do
       mkdir -p $dir/$FORM
       if test "$FORM" = "chorin"
@@ -59,11 +63,12 @@ if [[ $RUN == 1 ]]
 then
   for p in `seq 1 1`
   do
-    for FORM in chorin # mixed mixed-full subgrid
+    for FORM in $FORMS
     do
       pushd Re$Re/$p/$FORM
       OMP_NUM_THREADS=$NT mpirun -np $NP $NAVIERSTOKES Cyl2D-Re$Re.xinp -vtf 1 -hdf5 -petsc -msgLevel 1 | tee Cyl2D-Re$Re.log
       popd
+			python3 exportResults.py --inputname="Re"$Re"/$p/$FORM/Cyl2D_force.dat" --outputname="results_IFEM_"$FORM"_p"$p".txt"
     done
   done
 fi

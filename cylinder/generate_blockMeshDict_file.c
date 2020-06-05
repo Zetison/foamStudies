@@ -55,9 +55,8 @@ int main(int argc, char **argv){
 	double bdD = SED_BDD;
 	double Re  = SED_RE;
 	double L   = SED_LENGTH;
-	string str(argv[0]);
+	string str(argv[1]);
 	bool createFile = str.compare("openfoam") == 0;
-
 	double b = bdD*D;
 	double a = 2*b;
 	double t = 4*D;

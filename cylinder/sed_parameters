@@ -2,12 +2,11 @@
 MODEL_NAME="$1"
 NU=0.01     			# kinematic viscosity
 NP=$2            	# Number of processors
-MESH=8            # Mesh number: MESH = 1, 2, 3, ...
+MESH=$4            # Mesh number: MESH = 1, 2, 3, ...
 START_TIME=0      # Start time for simulation
-END_TIME=1000     # End time for simulation
+END_TIME=200     # End time for simulation
 DIAM=1.0          # Diameter of cylinder
 LENGTH=1.0        # Length of cylinder
-DELTA_T=0.01      # Discretization time step
 OMEGA_ROT=0.0     # Angular velocity of cylinder rotation
 U_INF=1.0         # incident velocity speed
 NRE_0=10 				  # minimum number of elements withing D/sqrt(Re) outside cylinder
@@ -18,6 +17,7 @@ PURGE_WRITE=0     # Integer representing a limit on the number of time directori
 
 STRIDE=$WRITE_INTERVAL									
 LREF=$LENGTH
+DELTA_T=$(echo "1/(10*2^($MESH-5))" | bc -l)   # Discretization time step
 AREF=$(echo "$DIAM*$LENGTH" | bc -l)
 Um=$(echo "0.05*$U_INF" | bc -l)
 l=$(echo "0.2*$DIAM" | bc -l)
@@ -27,12 +27,12 @@ EPSILON_0=$(echo "$C*sqrt($K_0^3)/$l" | bc -l)
 OMEGA_0=$(echo "sqrt($K_0)/$l" | bc -l)
 NUT_0=$(echo "0.09*$K_0^2/$EPSILON_0" | bc -l)
 RE=$(echo "sqrt($U_INF^2)*$DIAM/$NU" | bc -l)
-echo $EPSILON_0
+
 # DICTS contains the set of files at which we want to replace the variables in SED_VARIABLES
 if [[ $3 == "openfoam" ]]; then
 	DICTS="0/epsilon 0/k 0/nut 0/nuTilda 0/omega 0/p 0/s 0/U \
        constant/transportProperties \
-       system/blockMeshDict system/decomposeParDict system/controlDict \
+       system/decomposeParDict system/controlDict \
 			 postProcScript.py generate_blockMeshDict_file.c"
 else
 	DICTS="generate_blockMeshDict_file.c Cylinder2D-template.xinp Cylinder2D_chorin-template.xinp"
