@@ -38,10 +38,11 @@ def main(ifem,no_periods,plots,u_inf,diam,rho,length,inputname,outputname):
     f              = freq[Cl_max_fft_idx]    # approximated shedding frequency
     T              = 1/f                     # approximated shedding period
     
-    # Find the final 50 shedding cycles
-    t_start = t[-1] - (no_periods+1)*T # start at the time at which 50+1 periods remains (an extra period added for later cut off)
+    # Find the final no_periods shedding cycles
+    t_start = t[-1] - (no_periods+2)*T # start at the time at which no_periods+1 periods remains (two extra periods added for later cut off)
     if t_start < 0:
-        print('Data set does not contain enough periods: t_end = '+str(t[-1])+', T = '+str(T))
+        print('Data set does not contain enough shedding periods: t_end = '+str(t[-1])+', T = '+str(T))
+				return -1
 
     idx = np.where(t > t_start)
     t = t[idx]
@@ -93,6 +94,7 @@ def main(ifem,no_periods,plots,u_inf,diam,rho,length,inputname,outputname):
     file1.write("Strouhals number: %.5f (0.1569 from Rajani2008nso, 0.173 from NSCM_Cylinder)\n" % St)
     
     file1.close()
+		return 0
 
 if __name__ == '__main__':
     main()

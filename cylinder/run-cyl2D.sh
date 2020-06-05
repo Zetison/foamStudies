@@ -1,6 +1,4 @@
 #!/bin/bash
-module load openmpi-x86_64
-scl enable devtoolset-8 bash
 D=1.0
 b=64.0
 Re=100
@@ -8,9 +6,8 @@ MESH=7
 nel=$((2**($MESH-1)))
 nRe=10
 t=4.0
-NP=2
-NT=2
-STRIDE=10
+NP=30
+NT=1
 scriptLoc=$(pwd)
 outputFolder=$HOME/hugeFiles/IFEM/cylinder
 cp Cylinder2D_chorin-template.xinp Cylinder2D-template.xinp generate_blockMeshDict_file.c sed_parameters exportResults.py $outputFolder
@@ -22,14 +19,14 @@ beta=$(./generate_blockMeshDict_file "ifem")
 #NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
 NAVIERSTOKES=/home/akva/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
 GENERATOR=$HOME/kode/meshscripts/cylinder/cylinder.py
-#FORMS="chorin mixed mixed-full subgrid"
-FORMS="mixed-full"
+FORMS="chorin mixed mixed-full subgrid"
+#FORMS="mixed-full"
 GENERATE=$1
 RUN=$2
 
 if [[ $GENERATE == 1 ]]
 then
-  for p in `seq 1 1`
+  for p in `seq 1 3`
   do
     dir=Re$Re/$p
     mkdir -p $dir
@@ -61,7 +58,7 @@ fi
 
 if [[ $RUN == 1 ]]
 then
-  for p in `seq 1 1`
+  for p in `seq 1 3`
   do
     for FORM in $FORMS
     do

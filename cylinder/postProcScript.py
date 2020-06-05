@@ -102,13 +102,13 @@ renderView1.CameraFocalPoint = [5.7899, 0.0, 3.1415]
 renderView1.CameraParallelScale = 8.4728
 
 if True: # plot SINTEF logo
-    # create a new 'Logo'
-    logo1 = Logo()
-    SINTEF_white = CreateTexture(home+'OneDrive/work/graphics/logos/SINTEF_white.png')
-    logo1.Texture = SINTEF_white
-    logo1Display = Show(logo1, renderView1, 'LogoSourceRepresentation')
-    logo1Display.Position = [0.84, 0.0]
-    logo1Display.Interactivity = 0
+	# create a new 'Logo'
+	logo1 = Logo()
+	SINTEF_white = CreateTexture(home+'OneDrive/work/graphics/logos/SINTEF_white.png')
+	logo1.Texture = SINTEF_white
+	logo1Display = Show(logo1, renderView1, 'LogoSourceRepresentation')
+	logo1Display.Position = [0.84, 0.0]
+	logo1Display.Interactivity = 0
 
 #############################################################################################################
 ## Add volleyball image
@@ -197,19 +197,34 @@ renderView1.Update()
 SetActiveSource(None)
 Render()
 
-if True:
-	# get animation scene
+if False:
+	# Generate movie
 	SaveAnimation(dir+'/animation.ogv', layout1, 
-	    FontScaling='Scale fonts proportionally',
-	    OverrideColorPalette='',
-	    StereoMode='No change',
-	    TransparentBackground=0, 
-            SaveAllViews=1,
-	    ImageQuality=100,
-	    FrameRate=25,
-            ImageResolution=[1920, 1080],
-            SeparatorWidth=0,
-            SeparatorColor=[1.0, 1.0, 1.0],
-            Quality=2) #,
+			FontScaling='Scale fonts proportionally',
+			OverrideColorPalette='',
+			StereoMode='No change',
+			TransparentBackground=0, 
+			SaveAllViews=1,
+			ImageQuality=100,
+			FrameRate=25,
+			ImageResolution=renderView1.ViewSize,
+			SeparatorWidth=0,
+			SeparatorColor=[1.0, 1.0, 1.0],
+			Quality=2) #,
 #      FrameWindow=[0,10],
 
+if True:
+	## Save snapshots
+	for t in [100, 200, 1000]:
+		timeKeeper1 = GetTimeKeeper()
+		animationScene1 = GetAnimationScene()
+		animationScene1.AnimationTime = t
+		timeKeeper1.Time = t
+
+		SaveScreenshot(dir+'/screenshot_t'+str(t)+'.png', layout1, 
+				FontScaling='Scale fonts proportionally',
+				OverrideColorPalette='',
+				StereoMode='No change',
+				TransparentBackground=1,
+				ImageResolution=renderView1.ViewSize,
+				ImageQuality=100)

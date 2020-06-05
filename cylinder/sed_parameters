@@ -4,7 +4,7 @@ NU=0.01     			# kinematic viscosity
 NP=$2            	# Number of processors
 MESH=$4            # Mesh number: MESH = 1, 2, 3, ...
 START_TIME=0      # Start time for simulation
-END_TIME=200     # End time for simulation
+END_TIME=1000     # End time for simulation
 DIAM=1.0          # Diameter of cylinder
 LENGTH=1.0        # Length of cylinder
 OMEGA_ROT=0.0     # Angular velocity of cylinder rotation
