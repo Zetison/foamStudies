@@ -2,7 +2,7 @@
 MODEL_NAME="cylinder"
 NP=4    	# Number of processors
 name=${1:-$MODEL_NAME}
-for MESH in 8
+for MESH in 7
 do
 	pathToFolder="$HOME/OpenFOAM/OpenFOAM-v1912/run/"$name"_MESH_"$MESH
 	rm -rf $pathToFolder/*
