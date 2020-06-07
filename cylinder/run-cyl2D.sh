@@ -6,8 +6,8 @@ MESH=7
 nel=$((2**($MESH-1)))
 nRe=10
 t=4.0
-NP=30
-NT=1
+NP=2
+NT=2
 scriptLoc=$(pwd)
 outputFolder=$HOME/hugeFiles/IFEM/cylinder
 cp Cylinder2D_chorin-template.xinp Cylinder2D-template.xinp generate_blockMeshDict_file.c sed_parameters exportResults.py $outputFolder
@@ -16,17 +16,17 @@ cd $outputFolder
 ./sed_parameters "cylinder" $NP "ifem" $MESH
 g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file 
 beta=$(./generate_blockMeshDict_file "ifem")
-#NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
-NAVIERSTOKES=/home/akva/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
+NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
+#NAVIERSTOKES=/home/akva/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
 GENERATOR=$HOME/kode/meshscripts/cylinder/cylinder.py
-FORMS="chorin mixed mixed-full subgrid"
-#FORMS="mixed-full"
+#FORMS="chorin mixed mixed-full subgrid"
+FORMS="mixed-full"
 GENERATE=$1
 RUN=$2
 
 if [[ $GENERATE == 1 ]]
 then
-  for p in `seq 1 3`
+  for p in `seq 1 1`
   do
     dir=Re$Re/$p
     mkdir -p $dir
@@ -58,14 +58,14 @@ fi
 
 if [[ $RUN == 1 ]]
 then
-  for p in `seq 1 3`
+  for p in `seq 1 1`
   do
     for FORM in $FORMS
     do
       pushd Re$Re/$p/$FORM
       OMP_NUM_THREADS=$NT mpirun -np $NP $NAVIERSTOKES Cyl2D-Re$Re.xinp -vtf 1 -hdf5 -petsc -msgLevel 1 | tee Cyl2D-Re$Re.log
       popd
-			python3 exportResults.py --inputname="Re"$Re"/$p/$FORM/Cyl2D_force.dat" --outputname="results_IFEM_"$FORM"_p"$p".txt"
+			python3 exportResults.py --inputname="Re"$Re"/$p/$FORM/Cyl2D_force.dat" --outputname="results_IFEM_"$FORM"_p"$p".txt" --ifem
     done
   done
 fi
