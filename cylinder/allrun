@@ -2,6 +2,10 @@
 MODEL_NAME="cylinder"
 NP=4    	# Number of processors
 name=${1:-$MODEL_NAME}
+if [ -z "$DISPLAY" ]
+then
+	echo "Error: set the DISPLAY variable" #The display variable should be set for post processing purposes in paraview. This issue arises when using screen, and can be resolved by first getting the display variable outside the screen session (echo $DISPLAY) and then inside the screen session setting the variable to this value (i.e. export DISPLAY=localhost:10.0)"
+fi
 for MESH in 7
 do
 	pathToFolder="$HOME/OpenFOAM/OpenFOAM-v1912/run/"$name"_MESH_"$MESH
