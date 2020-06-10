@@ -67,8 +67,11 @@ vorticityLUT = GetColorTransferFunction('vorticity')
 vorticityPWF = GetOpacityTransferFunction('vorticity')
 
 # Apply a preset using its name. Note this may not work as expected when presets have duplicate names.
-vorticityLUT.ApplyPreset('SINTEF1', True)
-vorticityPWF.ApplyPreset('SINTEF1', True)
+with open(home+"/kode/colormaps/SINTEF1.xml", "r") as f:
+      data = f.read()
+      vorticityLUT.ApplyColorMap(data)
+#vorticityLUT.ApplyPreset('SINTEF1', True)
+#vorticityPWF.ApplyPreset('SINTEF1', True)
 
 # reset view to fit data
 # Rescale transfer function
