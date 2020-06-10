@@ -197,22 +197,6 @@ renderView1.Update()
 SetActiveSource(None)
 Render()
 
-if False:
-	# Generate movie
-	SaveAnimation(dir+'/animation.ogv', layout1, 
-			FontScaling='Scale fonts proportionally',
-			OverrideColorPalette='',
-			StereoMode='No change',
-			TransparentBackground=0, 
-			SaveAllViews=1,
-			ImageQuality=100,
-			FrameRate=25,
-			ImageResolution=renderView1.ViewSize,
-			SeparatorWidth=0,
-			SeparatorColor=[1.0, 1.0, 1.0],
-			Quality=2) #,
-#      FrameWindow=[0,10],
-
 if True:
 	## Save snapshots
 	for t in [100, 200, 1000]:
@@ -228,3 +212,19 @@ if True:
 				TransparentBackground=1,
 				ImageResolution=renderView1.ViewSize,
 				ImageQuality=100)
+
+if False:
+	# Generate movie
+	SaveAnimation(dir+'/animation.ogv', layout1, 
+			FontScaling='Scale fonts proportionally',
+			OverrideColorPalette='',
+			StereoMode='No change',
+			TransparentBackground=0, 
+			SaveAllViews=1,
+			ImageQuality=100,
+			FrameRate=25,
+			ImageResolution=renderView1.ViewSize,
+			SeparatorWidth=0,
+			SeparatorColor=[1.0, 1.0, 1.0],
+			Quality=2) #,
+#      FrameWindow=[0,10],
