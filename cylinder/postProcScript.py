@@ -9,6 +9,7 @@ dir = os.getcwd()
 #### disable automatic camera reset on 'Show'
 paraview.simple._DisableFirstRenderCameraReset()
 
+viewSize = [1920, 1080]
 axisLabelFontSize=13
 fontSize=18
 staticCylinder=True
@@ -17,7 +18,6 @@ home = '/home/'+username+'/'
 
 # get active view
 renderView1 = GetActiveViewOrCreate('RenderView')
-renderView1.ViewSize = [1920, 1080]
 
 # get animation scene
 animationScene1 = GetAnimationScene()
@@ -207,13 +207,13 @@ if True:
 		animationScene1 = GetAnimationScene()
 		animationScene1.AnimationTime = t
 		timeKeeper1.Time = t
-
+		renderView1.ViewSize = viewSize
 		SaveScreenshot(dir+'/screenshot_t'+str(t)+'.png', layout1, 
 				FontScaling='Scale fonts proportionally',
 				OverrideColorPalette='',
 				StereoMode='No change',
 				TransparentBackground=1,
-				ImageResolution=renderView1.ViewSize,
+				ImageResolution=viewSize,
 				ImageQuality=100)
 
 if False:
@@ -226,7 +226,7 @@ if False:
 			SaveAllViews=1,
 			ImageQuality=100,
 			FrameRate=25,
-			ImageResolution=renderView1.ViewSize,
+			ImageResolution=viewSize,
 			SeparatorWidth=0,
 			SeparatorColor=[1.0, 1.0, 1.0],
 			Quality=2) #,
