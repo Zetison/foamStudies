@@ -9,7 +9,7 @@ fi
 
 for MESH in 7
 do
-	pathToFolder="$HOME/OpenFOAM/OpenFOAM-v1912/run/"$name"_MESH_"$MESH
+	pathToFolder="$HOME/openfoam/"$name"_MESH_"$MESH
 	rm -rf $pathToFolder/*
 	mkdir -p $pathToFolder
 	cp -r ./* $pathToFolder

@@ -20,7 +20,7 @@ POSTPROCESS="-vtf 1 -hdf5"
 #POSTPROCESS=""
 RUN=$2
 p_arr=$(seq 1 3)
-p_arr=1
+#p_arr=1
 MESH_ARR=$(seq 6 7)
 
 if [[ $GENERATE == 1 ]]
