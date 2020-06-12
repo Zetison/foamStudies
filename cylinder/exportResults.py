@@ -84,16 +84,20 @@ def main(ifem,no_periods,plots,u_inf,diam,rho,length,inputname,outputname):
 	             t,Cl_min*np.ones(t.shape))
 	    plt.legend(('Spline approximation','Cl','Cd','Average drag','Cd_max','Cd_min','Cl_max','Cl_min'))
 	    plt.show()
-	
-	file1 = open(outputname, 'w') 
-	
-	file1.write("Average drag coefficient: %.5f (1.3353 from Rajani2008nso, 1.411 from NSCM_Cylinder)\n" % avgDragCoeff)
-	file1.write("Rms of lift coefficient: %.5f (0.1792 from Rajani2008nso)\n" % rmsLiftCoeff)
-	file1.write("Peak to peak lift: %.5f (0.727 from NSCM_Cylinder)\n" % peakToPeakLift)
-	file1.write("Peak to peak drag: %.5f (0.0203 from NSCM_Cylinder)\n" % peakToPeakDrag)
-	file1.write("Strouhals number: %.5f (0.1569 from Rajani2008nso, 0.173 from NSCM_Cylinder)\n" % St)
-	
+	file1 = open(outputname, 'w')
+
+	file1.write("%20s %20s %20s %20s %20s\n" % ('C_davg', 'C_lrms', 'C_lptp', 'C_dptp', 'St'))
+	file1.write("%20.15g %20.15g %20.15g %20.15g %20.15g\n" % (avgDragCoeff, rmsLiftCoeff, peakToPeakLift, peakToPeakDrag, St))
 	file1.close()
+#	file1 = open(outputname, 'w') 
+#	
+#	file1.write("Average drag coefficient: %.5f (1.3353 from Rajani2008nso, 1.411 from NSCM_Cylinder)\n" % avgDragCoeff)
+#	file1.write("Rms of lift coefficient: %.5f (0.1792 from Rajani2008nso)\n" % rmsLiftCoeff)
+#	file1.write("Peak to peak lift: %.5f (0.727 from NSCM_Cylinder)\n" % peakToPeakLift)
+#	file1.write("Peak to peak drag: %.5f (0.0203 from NSCM_Cylinder)\n" % peakToPeakDrag)
+#	file1.write("Strouhals number: %.5f (0.1569 from Rajani2008nso, 0.173 from NSCM_Cylinder)\n" % St)
+#	
+#	file1.close()
 	return 0
 
 if __name__ == '__main__':
