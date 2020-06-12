@@ -15,10 +15,10 @@
     <formulation>stress</formulation>
   </navierstokes>
 
-  <linearsolver>
-    <type>preonly</type>
-    <pc>lu</pc>
-    <package>mumps</package>
+  <linearsolver class="SED_V_CLASS">
+    <type>SED_V_TYPE</type>
+    <pc>SED_V_PC</pc>
+    <package>SED_V_PACKAGE</package>
   </linearsolver>
 
   <discretization>

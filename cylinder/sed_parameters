@@ -9,14 +9,33 @@ DIAM=1.0          # Diameter of cylinder
 LENGTH=1.0        # Length of cylinder
 OMEGA_ROT=0.0     # Angular velocity of cylinder rotation
 U_INF=1.0         # incident velocity speed
-NRE_0=10 				  # minimum number of elements withing D/sqrt(Re) outside cylinder
 BDD=64            # ratio between height of domain and diameter of cylinder
 WRITE_INTERVAL=10  # Writes data every writeInterval time steps
 PURGE_WRITE=0     # Integer representing a limit on the number of time directories 
                   # that are stored by overwriting time directories on a cyclic basis
+SOLVER='iterative'
+SED_V_CLASS=petsc
+SED_P_CLASS=petsc
+if [[ $SOLVER == 'iterative' ]]
+then
+	SED_V_TYPE=gmres
+	SED_V_PC=asm
+	SED_V_PACKAGE=petsc
+	SED_P_TYPE=$SED_V_TYPE
+	SED_P_PC=gamg
+	SED_P_PACKAGE=$SED_V_PACKAGE
+else
+	SED_V_TYPE=preonly
+	SED_V_PC=lu
+	SED_V_PACKAGE=mumps
+	SED_P_TYPE=$SED_V_TYPE
+	SED_P_PC=$SED_V_TYPE
+	SED_P_PACKAGE=$SED_V_PACKAGE
+fi
 
 STRIDE=$WRITE_INTERVAL									
 LREF=$LENGTH
+NRE_0=$(echo "5*2^($MESH-6)" | bc -l) 				  # minimum number of elements withing D/sqrt(Re) outside cylinder
 DELTA_T=$(echo "1/(10*2^($MESH-5))" | bc -l)   # Discretization time step
 AREF=$(echo "$DIAM*$LENGTH" | bc -l)
 Um=$(echo "0.05*$U_INF" | bc -l)
@@ -39,7 +58,8 @@ else
 fi
 SED_VARIABLES="BDD DIAM LENGTH NRE_0 RE MESH OMEGA_ROT \
 							 NP START_TIME END_TIME DELTA_T U_INF AREF LREF \
-							 EPSILON_0 K_0 NUT_0 OMEGA_0 NU MODEL_NAME WRITE_INTERVAL PURGE_WRITE STRIDE"
+							 EPSILON_0 K_0 NUT_0 OMEGA_0 NU MODEL_NAME WRITE_INTERVAL PURGE_WRITE STRIDE
+							 V_CLASS P_CLASS V_TYPE V_PC V_PACKAGE P_TYPE P_PC P_PACKAGE"
 
 for DICT in $DICTS 
 do

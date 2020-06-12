@@ -15,10 +15,10 @@
       <dirichlet set="wall" comp="2"/>
       <dirichlet set="cylinder" comp="12"/>
     </boundaryconditions>
-    <linearsolver>
-      <type>preonly</type>
-      <pc>lu</pc>
-      <package>mumps</package>
+    <linearsolver class="SED_V_CLASS">
+      <type>SED_V_TYPE</type>
+      <pc>SED_V_PC</pc>
+      <package>SED_V_PACKAGE</package>
     </linearsolver>
   </velocityprediction>
 
@@ -26,10 +26,10 @@
     <boundaryconditions>
       <dirichlet set="outflow" comp="1"/>
     </boundaryconditions>
-    <linearsolver>
-      <type>preonly</type>
-      <pc>lu</pc>
-      <package>mumps</package>
+    <linearsolver class="SED_P_CLASS">
+      <type>SED_P_TYPE</type>
+      <pc>SED_P_PC</pc>
+      <package>SED_P_PACKAGE</package>
     </linearsolver>
   </pressurecorrection>
 
@@ -40,10 +40,10 @@
       <dirichlet set="wall" comp="2"/>
       <dirichlet set="cylinder" comp="12"/>
     </boundaryconditions>
-    <linearsolver>
-      <type>preonly</type>
-      <pc>lu</pc>
-      <package>mumps</package>
+    <linearsolver class="SED_V_CLASS">
+      <type>SED_V_TYPE</type>
+      <pc>SED_V_PC</pc>
+      <package>SED_V_PACKAGE</package>
     </linearsolver>
   </velocitycorrection>
 
