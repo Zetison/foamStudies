@@ -33,7 +33,7 @@ then
 		mkdir -p $meshdir
 		cp generate_blockMeshDict_file.c Cylinder2D_chorin-template.xinp Cylinder2D-template.xinp ./$meshdir/
 		pushd $meshdir > /dev/null
-		../sed_parameters "cylinder" $NP "ifem" $MESH
+		../sed_parameters "cylinder" $NP "ifem" $MESH $SOLVER
 		g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file 
 		beta=$(./generate_blockMeshDict_file "ifem")
 		popd > /dev/null

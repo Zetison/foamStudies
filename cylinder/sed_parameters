@@ -16,7 +16,7 @@ PURGE_WRITE=2     # Integer representing a limit on the number of time directori
 SOLVER='iterative'
 SED_V_CLASS=petsc
 SED_P_CLASS=petsc
-if [[ $SOLVER == 'iterative' ]]
+if [[ $5 == 'iterative' ]]
 then
 	SED_V_TYPE=gmres
 	SED_V_PC=asm
