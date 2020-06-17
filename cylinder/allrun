@@ -1,15 +1,15 @@
 #!/bin/bash
 MODEL_NAME="cylinder"
-NP=4    	# Number of processors
+NP=48    	# Number of processors
 name=${1:-$MODEL_NAME}
 if [ -z "$DISPLAY" ]
 then
 	echo "Error: set the DISPLAY variable" #The display variable should be set for post processing purposes in paraview. This issue arises when using screen, and can be resolved by first getting the display variable outside the screen session (echo $DISPLAY) and then inside the screen session setting the variable to this value (i.e. export DISPLAY=localhost:10.0)"
 fi
 
-for MESH in 7
+for MESH in 9
 do
-	pathToFolder="$HOME/openfoam/"$name"_MESH_"$MESH
+	pathToFolder="$HOME/results/openfoam/"$name"_MESH_"$MESH
 	rm -rf $pathToFolder/*
 	mkdir -p $pathToFolder
 	cp -r ./* $pathToFolder
@@ -28,7 +28,7 @@ do
 	python3 exportResults.py --inputname="postProcessing/forceCoeffs/0/coefficient.dat" --outputname="results_OF_$MESH.txt" --openfoam
 	cat results_OF_$MESH.txt
 	
-	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py 
+#	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py 
 	#paraview --script=postProcScript.py
 	popd > /dev/null
 done
