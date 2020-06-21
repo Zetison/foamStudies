@@ -9,7 +9,7 @@ fi
 
 for MESH in 7
 do
-	pathToFolder="$HOME/openfoam/"$name"_MESH_"$MESH
+	pathToFolder="$HOME/results/openfoam/"$name"_MESH_"$MESH
 	rm -rf $pathToFolder/*
 	mkdir -p $pathToFolder
 	cp -r ./* $pathToFolder
@@ -28,7 +28,7 @@ do
 	python3 exportResults.py --inputname="postProcessing/forceCoeffs/0/coefficient.dat" --outputname="results_OF_$MESH.txt" --openfoam
 	cat results_OF_$MESH.txt
 	
-	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py 
+	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py -mpi 
 	#paraview --script=postProcScript.py
 	popd > /dev/null
 done

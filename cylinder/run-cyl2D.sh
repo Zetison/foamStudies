@@ -3,15 +3,15 @@ D=1.0
 b=64.0
 Re=100
 t=4.0
-NP=32
+NP=2
 NT=1
 scriptLoc=$(pwd)
 outputFolder=$HOME/results/IFEM/cylinder
 mkdir -p $outputFolder
 cp Cylinder2D_chorin-template.xinp Cylinder2D-template.xinp generate_blockMeshDict_file.c sed_parameters exportResults.py $outputFolder
 cd $outputFolder
-#NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
-NAVIERSTOKES=/home/akva/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
+NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
+#NAVIERSTOKES=/home/akva/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
 GENERATOR=$HOME/kode/meshscripts/cylinder/cylinder.py
 FORMS="chorin mixed mixed-full subgrid"
 #FORMS="mixed-full"
@@ -20,8 +20,9 @@ POSTPROCESS="-vtf 1 -hdf5"
 #POSTPROCESS=""
 RUN=$2
 p_arr=$(seq 1 3)
-#p_arr=1
+p_arr=1
 MESH_ARR=$(seq 6 7)
+MESH_ARR=6
 
 if [[ $GENERATE == 1 ]]
 then
@@ -74,9 +75,9 @@ then
   	do
   	  for FORM in $FORMS
   	  do
-  	    pushd Re$Re/$p/$FORM
+  	    pushd MESH$MESH/$p/$FORM > /dev/null
   	    OMP_NUM_THREADS=$NT mpirun -np $NP $NAVIERSTOKES Cyl2D-Re$Re.xinp $POSTPROCESS -petsc -msgLevel 1 | tee Cyl2D-Re$Re.log
-  	    popd
+  	    popd > /dev/null
 				python3 exportResults.py --inputname="MESH"$MESH"/$p/$FORM/Cyl2D_force.dat" --outputname="results_IFEM_"$FORM"_p"$p"_MESH"$MESH".txt" --ifem
   	  done
   	done
