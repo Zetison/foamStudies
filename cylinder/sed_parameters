@@ -14,23 +14,29 @@ WRITE_INTERVAL=10  # Writes data every writeInterval time steps
 PURGE_WRITE=2     # Integer representing a limit on the number of time directories 
                   # that are stored by overwriting time directories on a cyclic basis
 SOLVER='iterative'
+<<<<<<< HEAD
+V_CLASS=petsc
+P_CLASS=$V_CLASS
+if [[ $SOLVER == 'iterative' ]]
+=======
 SED_V_CLASS=petsc
 SED_P_CLASS=petsc
 if [[ $5 == 'iterative' ]]
+>>>>>>> 001129f36a4469d71f8b1930593047f336b86665
 then
-	SED_V_TYPE=gmres
-	SED_V_PC=asm
-	SED_V_PACKAGE=petsc
-	SED_P_TYPE=$SED_V_TYPE
-	SED_P_PC=gamg
-	SED_P_PACKAGE=$SED_V_PACKAGE
+	V_TYPE=gmres
+	V_PC=asm
+	V_PACKAGE=petsc
+	P_TYPE=$V_TYPE
+	P_PC=gamg
+	P_PACKAGE=$V_PACKAGE
 else
-	SED_V_TYPE=preonly
-	SED_V_PC=lu
-	SED_V_PACKAGE=mumps
-	SED_P_TYPE=$SED_V_TYPE
-	SED_P_PC=$SED_V_TYPE
-	SED_P_PACKAGE=$SED_V_PACKAGE
+	V_TYPE=preonly
+	V_PC=lu
+	V_PACKAGE=mumps
+	P_TYPE=$V_TYPE
+	P_PC=$V_TYPE
+	P_PACKAGE=$V_PACKAGE
 fi
 
 STRIDE=$WRITE_INTERVAL									
