@@ -33,7 +33,7 @@ writeControl    timeStep;
 
 writeInterval   SED_WRITE_INTERVAL;
 
-//purgeWrite      SED_PURGE_WRITE; //number of existing direcories at any time (0 = disable)
+purgeWrite      SED_PURGE_WRITE; //number of existing direcories at any time (0 = disable)
 
 writeFormat     binary; //or ascii
 

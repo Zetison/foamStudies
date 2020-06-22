@@ -67,7 +67,7 @@ int main(int argc, char **argv){
 	int N = 1 << M-1;
 	double delta_Nr = (a-b)/N;
 	double f, df; // Find beta through Newton iterations
-	double beta = 2.0;
+	double beta = 1.1;
 	for (size_t i = 0; i < 100; i++)
 	{
 		f = (delta_Nr+(1-beta)*(b-D)/2)*(1-pow(beta,N_Re))-D/sqrt(Re)*(1-beta);

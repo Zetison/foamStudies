@@ -11,12 +11,18 @@ OMEGA_ROT=0.0     # Angular velocity of cylinder rotation
 U_INF=1.0         # incident velocity speed
 BDD=64            # ratio between height of domain and diameter of cylinder
 WRITE_INTERVAL=10  # Writes data every writeInterval time steps
-PURGE_WRITE=0     # Integer representing a limit on the number of time directories 
+PURGE_WRITE=2     # Integer representing a limit on the number of time directories 
                   # that are stored by overwriting time directories on a cyclic basis
 SOLVER='iterative'
+<<<<<<< HEAD
 V_CLASS=petsc
 P_CLASS=$V_CLASS
 if [[ $SOLVER == 'iterative' ]]
+=======
+SED_V_CLASS=petsc
+SED_P_CLASS=petsc
+if [[ $5 == 'iterative' ]]
+>>>>>>> 001129f36a4469d71f8b1930593047f336b86665
 then
 	V_TYPE=gmres
 	V_PC=asm
