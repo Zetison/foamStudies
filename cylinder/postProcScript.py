@@ -66,8 +66,7 @@ vorticityLUT = GetColorTransferFunction('vorticity')
 # get color transfer function/color map for 'Vorticity'
 vorticityPWF = GetOpacityTransferFunction('vorticity')
 
-# Apply a preset using its name. Note this may not work as expected when presets have duplicate names.
-with open(home+"/kode/colormaps/SINTEF1.xml", "r") as f:
+with open(home+"kode/colormaps/SINTEF1.xml", "r") as f:
       data = f.read()
       vorticityLUT.ApplyColorMap(data)
 #vorticityLUT.ApplyPreset('SINTEF1', True)
@@ -110,7 +109,7 @@ if True: # plot SINTEF logo
 	SINTEF_white = CreateTexture(home+'OneDrive/work/graphics/logos/SINTEF_white.png')
 	logo1.Texture = SINTEF_white
 	logo1Display = Show(logo1, renderView1, 'LogoSourceRepresentation')
-	logo1Display.Position = [0.84, 0.0]
+	logo1Display.Position = [0.86, 0.0]
 	logo1Display.Interactivity = 0
 
 #############################################################################################################
