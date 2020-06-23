@@ -1,5 +1,6 @@
 #!/bin/bash
-MODEL_NAME="cylinder"
+MODEL_NAME="BeTSSi"
+#MODEL_NAME="sphere_320" #sphere_320, sphere_1280, sphere_5120, sphere_20480
 NP=4    	# Number of processors
 name=${1:-$MODEL_NAME}
 if [ -z "$DISPLAY" ]
@@ -9,12 +10,12 @@ fi
 
 DICTS="0/epsilon 0/k 0/nut 0/nuTilda 0/omega 0/p 0/s 0/U \
        constant/transportProperties \
-       system/decomposeParDict system/controlDict \
-			 postProcScript.py generate_blockMeshDict_file.c"
-SED_VARIABLES="BDD DIAM LENGTH NRE RE MESH OMEGA_ROT \
+       system/blockMeshDict system/decomposeParDict system/controlDict system/surfaceFeatureExtractDict system/snappyHexMeshDict \
+			 postProcScript.py"
+SED_VARIABLES="DX_FRNT DX_BCK DZ_TOP DZ_BT DY MESH RE MESH \
 							 NP START_TIME END_TIME DELTA_T U_INF AREF LREF \
 							 EPSILON_0 K_0 NUT_0 OMEGA_0 NU MODEL_NAME WRITE_INTERVAL PURGE_WRITE STRIDE"
-for MESH in 6
+for MESH in 0
 do
 	pathToFolder="$HOME/results/openfoam/"$name"_MESH_"$MESH
 	rm -rf $pathToFolder/*
@@ -25,9 +26,10 @@ do
 	source ./parameters
 	source $HOME/kode/bashScripts/sedFiles
 			
-	g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file
-	./generate_blockMeshDict_file "openfoam"
 	blockMesh
+	surfaceFeatureExtract
+	snappyHexMesh -overwrite
+
 	
 	decomposePar
 	mpirun -np $NP pisoFoam -parallel
@@ -37,6 +39,6 @@ do
 	cat results_OF_$MESH.txt
 	
 #	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py -mpi 
-#	paraview --script=postProcScript.py
+	paraview --script=postProcScript.py
 	popd > /dev/null
 done
