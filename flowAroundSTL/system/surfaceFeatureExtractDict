@@ -1,0 +1,39 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1912                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+	version     2.0;
+	format      ascii;
+	class       dictionary;
+	location    "system";
+	object      surfaceFeatureExtractDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+SED_MODEL_NAME.stl
+{
+	// How to obtain raw features (extractFromFile || extractFromSurface)
+	extractionMethod extractFromSurface;
+	
+	extractFromSurfaceCoeffs
+	{
+		// Mark edges whose adjacent surface normals are at an angle less
+		// than includedAngle as features
+		// - 0  : selects no edges
+		// - 180: selects all edges
+		includedAngle 155.7;
+	}
+	
+	// Write options
+	
+	// Write features to obj format for debugging/mesh inspection/postprocessing
+	writeObj no; // no/yes
+}
+
+
+// ************************************************************************* //

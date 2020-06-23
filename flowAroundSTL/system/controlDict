@@ -1,0 +1,83 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1912                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+	version     2.0;
+	format      ascii;
+	class       dictionary;
+	location    "system";
+	object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     pisoFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         SED_END_TIME;
+
+deltaT          SED_DELTA_T;
+
+adjustTimeStep  no; // yes or no 
+
+writeControl    runTime;
+
+writeInterval   SED_WRITE_INTERVAL;
+
+purgeWrite      SED_PURGE_WRITE; //number of existing direcories at any time (0 = disable)
+
+writeFormat     binary; //or ascii
+
+writePrecision  6;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+writeCompression  off;
+
+// ************************************************************************* //
+
+functions
+{
+	forceCoeffs
+	{
+		type    forceCoeffs;
+		libs    (forces);
+		patches (SED_MODEL_NAME);
+
+		log no; //no or yes
+		
+		rho rhoInf;
+		rhoInf 1;
+		
+		pName p;
+		UName U;
+		
+		liftDir     (0 0 1);
+		dragDir     (1 0 0);
+		CofR        (0 0 0);
+		pitchAxis   (0 1 0);
+		magUInf     SED_U_INF;
+		lRef        SED_LREF;
+		Aref        SED_AREF;
+	}
+
+	vorticity
+	{
+		type vorticity;
+		libs (fieldFunctionObjects);
+		log no; //no or yes
+	}
+}

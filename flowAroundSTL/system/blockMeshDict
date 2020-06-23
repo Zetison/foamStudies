@@ -1,0 +1,102 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1912                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+	version     2.0;
+	format      ascii;
+	class       dictionary;
+	location    "system";
+	object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+scale	1;
+
+a       7.0;
+b       3.5;
+c       4.0;
+h_s     3.5;
+L       42.0;
+g2      6.5;
+g3      6.5;
+dx_frnt SED_DX_FRNT;
+dx_bck  SED_DX_BCK;
+dz_top  SED_DZ_TOP;
+dz_bt   SED_DZ_BT;
+dy      SED_DY; // this should be 4.5 times the cross sectional diameter of object
+M       SED_MESH; 	  // mesh number (0 is the coarsest mesh)
+
+minX #eval{ -1*round($L+$g2+$g3+$dx_bck) };
+maxX #eval{ round($a+$dx_frnt) };
+minY #eval{ -1*round($b+$dy) };
+maxY #eval{ round($b+$dy) };
+minZ #eval{ -1*round($b+$dz_bt) };
+maxZ #eval{ round($c+$h_s+$dz_top) };
+nx  #calc "(int)(($maxX - $minX)*pow(2,$M-1))";
+ny  #calc "(int)(($maxY - $minY)*pow(2,$M-1))";
+nz  #calc "(int)(($maxZ - $minZ)*pow(2,$M-1))";
+
+vertices
+(
+	($minX $minY $minZ)
+	($maxX $minY $minZ)
+	($maxX $maxY $minZ)
+	($minX $maxY $minZ)
+	($minX $minY $maxZ)
+	($maxX $minY $maxZ)
+	($maxX $maxY $maxZ)
+	($minX $maxY $maxZ)
+);
+
+blocks
+(
+	hex (0 1 2 3 4 5 6 7) ($nx $ny $nz) simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+	walls
+	{
+		type wall;
+		faces
+		(
+			(0 3 2 1)
+			(3 7 6 2)
+			(4 5 6 7)
+			(1 5 4 0)
+		);
+	}
+	
+	inlet
+	{
+		type wall;
+		faces
+		(
+			(2 6 5 1)
+		);
+	}
+
+	outlet
+	{
+		type wall;
+		faces
+		(
+			(0 4 7 3)
+		);
+	}
+);
+
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //
