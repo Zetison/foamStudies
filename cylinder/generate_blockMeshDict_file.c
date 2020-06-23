@@ -51,7 +51,7 @@ void insSubArray(double A[][3], int idx, double x, double y, double z){
 int main(int argc, char **argv){
 	double D   = SED_DIAM;
 	int M      = SED_MESH;
-	int N_Re_0 = SED_NRE_0;
+	int N_Re   = SED_NRE;
 	double bdD = SED_BDD;
 	double Re  = SED_RE;
 	double L   = SED_LENGTH;
@@ -60,9 +60,6 @@ int main(int argc, char **argv){
 	double b = bdD*D;
 	double a = 2*b;
 	double t = 4*D;
-	int N_Re = N_Re_0*pow(2,(M>7)?(M-7):0);        // Roughly the number of elements
-	                                             // withing D/sqrt(Re) outside the cylinder 
-                                               // (should be at least 5)
 
 	int N = 1 << M-1;
 	double delta_Nr = (a-b)/N;

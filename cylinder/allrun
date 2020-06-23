@@ -7,6 +7,13 @@ then
 	echo "Error: set the DISPLAY variable" #The display variable should be set for post processing purposes in paraview. This issue arises when using screen, and can be resolved by first getting the display variable outside the screen session (echo $DISPLAY) and then inside the screen session setting the variable to this value (i.e. export DISPLAY=localhost:10.0)"
 fi
 
+DICTS="0/epsilon 0/k 0/nut 0/nuTilda 0/omega 0/p 0/s 0/U \
+       constant/transportProperties \
+       system/decomposeParDict system/controlDict \
+			 postProcScript.py generate_blockMeshDict_file.c"
+SED_VARIABLES="BDD DIAM LENGTH NRE_0 RE MESH OMEGA_ROT \
+							 NP START_TIME END_TIME DELTA_T U_INF AREF LREF \
+							 EPSILON_0 K_0 NUT_0 OMEGA_0 NU MODEL_NAME WRITE_INTERVAL PURGE_WRITE STRIDE"
 for MESH in 6
 do
 	pathToFolder="$HOME/results/openfoam/"$name"_MESH_"$MESH
@@ -15,24 +22,11 @@ do
 	cp -r ./* $pathToFolder
 	
 	pushd $pathToFolder > /dev/null
-	./sed_parameters $MODEL_NAME $NP "openfoam" "$MESH" 
-	
+	source ./parameters
+	source $HOME/kode/bashScripts/sedFiles
+			
 	g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file
 	./generate_blockMeshDict_file "openfoam"
-<<<<<<< HEAD
-#	blockMesh
-#	
-#	decomposePar
-#	mpirun -np $NP pisoFoam -parallel
-#	
-#	python3 convertDatToCSV.py
-#	python3 exportResults.py --inputname="postProcessing/forceCoeffs/0/coefficient.dat" --outputname="results_OF_$MESH.txt" --openfoam
-#	cat results_OF_$MESH.txt
-#	
-##	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py 
-#	#paraview --script=postProcScript.py
-#	popd > /dev/null
-||||||| 001129f
 	blockMesh
 	
 	decomposePar
@@ -42,25 +36,7 @@ do
 	python3 exportResults.py --inputname="postProcessing/forceCoeffs/0/coefficient.dat" --outputname="results_OF_$MESH.txt" --openfoam
 	cat results_OF_$MESH.txt
 	
-#	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py 
-	#paraview --script=postProcScript.py
+#	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py -mpi 
+#	paraview --script=postProcScript.py
 	popd > /dev/null
-=======
-	blockMesh
-	
-	decomposePar
-	mpirun -np $NP pisoFoam -parallel
-	
-	python3 convertDatToCSV.py
-	python3 exportResults.py --inputname="postProcessing/forceCoeffs/0/coefficient.dat" --outputname="results_OF_$MESH.txt" --openfoam
-	cat results_OF_$MESH.txt
-	
-<<<<<<< HEAD
-	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py -mpi 
-=======
-#	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py 
->>>>>>> 001129f36a4469d71f8b1930593047f336b86665
-	#paraview --script=postProcScript.py
-	popd > /dev/null
->>>>>>> 89545f85b6d07d1610fd1db9bf4d4de29336d61d
 done

@@ -1,0 +1,27 @@
+#!/bin/bash
+NU=0.01     			# kinematic viscosity
+START_TIME=0      # Start time for simulation
+END_TIME=150     # End time for simulation
+DIAM=1.0          # Diameter of cylinder
+LENGTH=1.0        # Length of cylinder
+OMEGA_ROT=0.0     # Angular velocity of cylinder rotation
+U_INF=1.0         # incident velocity speed
+BDD=64            # ratio between height of domain and diameter of cylinder
+PURGE_WRITE=2     # Integer representing a limit on the number of time directories 
+                  # that are stored by overwriting time directories on a cyclic basis
+
+LREF=$LENGTH
+NRE=$(echo "5*2^($MESH-6)" | bc -l) 				  # minimum number of elements withing D/sqrt(Re) outside cylinder
+DELTA_T=$(echo "1/(10*2^($MESH-5))" | bc -l)   # Discretization time step
+WRITE_INTERVAL=$(echo "5*2^($MESH-6)" | bc -l)  # Writes data every writeInterval time steps
+AREF=$(echo "$DIAM*$LENGTH" | bc -l)
+Um=$(echo "0.05*$U_INF" | bc -l)
+l=$(echo "0.2*$DIAM" | bc -l)
+K_0=$(echo "3/2*$Um^2" | bc -l)
+C=0.16431676725 #0.09^0.75
+EPSILON_0=$(echo "$C*sqrt($K_0^3)/$l" | bc -l)
+OMEGA_0=$(echo "sqrt($K_0)/$l" | bc -l)
+NUT_0=$(echo "0.09*$K_0^2/$EPSILON_0" | bc -l)
+RE=$(echo "sqrt($U_INF^2)*$DIAM/$NU" | bc -l)
+STRIDE=$WRITE_INTERVAL									
+
