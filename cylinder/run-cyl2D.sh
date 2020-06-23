@@ -15,17 +15,16 @@ NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
 #NAVIERSTOKES=/home/akva/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
 GENERATOR=$HOME/kode/meshscripts/cylinder/cylinder.py
 FORMS="mixed mixed-full subgrid chorin"
-#FORMS="mixed-full"
+FORMS="mixed-full"
 GENERATE=$1
 POSTPROCESS="-vtf 1 -hdf5"
-#POSTPROCESS=""
+POSTPROCESS=""
 RUN=$2
 p_arr=$(seq 1 3)
 p_arr=1
 MESH_ARR=$(seq 6 7)
 MESH_ARR=6
 
-DICTS="generate_blockMeshDict_file.c Cyl2D.xinp"
 SED_VARIABLES="BDD DIAM LENGTH NRE_0 RE MESH OMEGA_ROT \
 							 NP START_TIME END_TIME DELTA_T U_INF AREF LREF \
 							 EPSILON_0 K_0 NUT_0 OMEGA_0 NU MODEL_NAME WRITE_INTERVAL PURGE_WRITE STRIDE \
@@ -42,6 +41,8 @@ then
 		source ./parameters
 		cp generate_blockMeshDict_file.c ./$meshdir/
 		pushd $meshdir > /dev/null
+		DICTS="generate_blockMeshDict_file.c"
+		source $HOME/kode/bashScripts/sedFiles
 		g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file 
 		beta=$(./generate_blockMeshDict_file "ifem")
 		popd > /dev/null
@@ -84,6 +85,7 @@ then
 	        cp Cylinder2D-template.xinp $caseFolder/Cyl2D.xinp
 	      fi
 	    	pushd $caseFolder > /dev/null
+				DICTS="Cyl2D.xinp"
 				source $HOME/kode/bashScripts/sedFiles
 	    	popd > /dev/null
 	      cp $dir/cyl2D.xinp $dir/cyl2D.g2 $dir/$FORM
