@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#if test "$MODEL_NAME" = "BeTSSi"
+#then
+NU=0.01     			# kinematic viscosity
+START_TIME=0      # Start time for simulation
+END_TIME=800      # End time for simulation
+U_INF=-1.0        # incident velocity speed
+DX_FRNT=10.0
+DX_BCK=40.0
+DZ_TOP=20.0
+DZ_BT=20.0
+DY=20.0         # this should be 4.5 times the cross sectional diameter of object
+AREF=50.0       # (roughly the) cross sectional area of submarine 
+PURGE_WRITE=2     # Integer representing a limit on the number of time directories 
+                 # that are stored by overwriting time directories on a cyclic basis
+#fi
+
+LREF=7.0
+DELTA_T=$(echo "1/(10*2^$MESH)" | bc -l)   # Discretization time step
+WRITE_INTERVAL=$(echo "5*2^$MESH" | bc -l)  # Writes data every writeInterval time steps
+Um=$(echo "0.05*$U_INF" | bc -l)
+l=$(echo "0.2*$LREF" | bc -l)
+K_0=$(echo "3/2*$Um^2" | bc -l)
+C=0.16431676725 #0.09^0.75
+EPSILON_0=$(echo "$C*sqrt($K_0^3)/$l" | bc -l)
+OMEGA_0=$(echo "sqrt($K_0)/$l" | bc -l)
+NUT_0=$(echo "0.09*$K_0^2/$EPSILON_0" | bc -l)
+RE=$(echo "sqrt($U_INF^2)*10/$NU" | bc -l)
+STRIDE=$WRITE_INTERVAL									
+
