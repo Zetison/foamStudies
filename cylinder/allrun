@@ -11,7 +11,7 @@ DICTS="0/epsilon 0/k 0/nut 0/nuTilda 0/omega 0/p 0/s 0/U \
        constant/transportProperties \
        system/decomposeParDict system/controlDict \
 			 postProcScript.py generate_blockMeshDict_file.c"
-SED_VARIABLES="BDD DIAM LENGTH NRE_0 RE MESH OMEGA_ROT \
+SED_VARIABLES="BDD DIAM LENGTH NRE RE MESH OMEGA_ROT \
 							 NP START_TIME END_TIME DELTA_T U_INF AREF LREF \
 							 EPSILON_0 K_0 NUT_0 OMEGA_0 NU MODEL_NAME WRITE_INTERVAL PURGE_WRITE STRIDE"
 for MESH in 6
