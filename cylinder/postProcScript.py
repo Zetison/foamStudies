@@ -108,7 +108,7 @@ if True: # plot SINTEF logo
 	logo1 = Logo()
 	logo1.Texture = CreateTexture(home+'OneDrive/work/graphics/logos/SINTEF_white.png')
 	logo1Display = Show(logo1, renderView1, 'LogoSourceRepresentation')
-	logo1Display.Position = [0.86, 0.0]
+	logo1Display.Position = [0.84, 0.0]
 	logo1Display.Interactivity = 0
 
 #############################################################################################################
