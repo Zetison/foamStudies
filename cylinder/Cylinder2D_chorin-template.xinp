@@ -11,7 +11,7 @@
   <velocityprediction>
     <boundaryconditions>
       <dirichlet set="inflow" comp="1" type="expression">if(below(t,1.0),t,1.0)</dirichlet>
-      <dirichlet set="inflow" comp="2" type="expression">0.02*if(below(t,1.0),1.0,0.0)</dirichlet>
+      <dirichlet set="inflow" comp="2" type="expression">0.02*if(below(t,1.0),1.0-t,0.0)</dirichlet>
       <dirichlet set="wall" comp="2"/>
       <dirichlet set="cylinder" comp="12"/>
     </boundaryconditions>
@@ -36,7 +36,7 @@
   <velocitycorrection>
     <boundaryconditions>
       <dirichlet set="inflow" comp="1" type="expression">if(below(t,1.0),t,1.0)</dirichlet>
-      <dirichlet set="inflow" comp="2" type="expression">0.02*if(below(t,1.0),1.0,0.0)</dirichlet>
+      <dirichlet set="inflow" comp="2" type="expression">0.02*if(below(t,1.0),1.0-t,0.0)</dirichlet>
       <dirichlet set="wall" comp="2"/>
       <dirichlet set="cylinder" comp="12"/>
     </boundaryconditions>
@@ -52,7 +52,6 @@
   </discretization>
 
   <postprocessing>
-		<primarySolOnly/>
 		<stride>SED_STRIDE</stride>
   </postprocessing>
 

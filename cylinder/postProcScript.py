@@ -198,7 +198,7 @@ renderView1.Update()
 SetActiveSource(None)
 Render()
 
-if True:
+if False:
 	## Save snapshots
 	for t in [100, 200, 1000]:
 		timeKeeper1 = GetTimeKeeper()

@@ -46,11 +46,6 @@ boundaryField
 		type  epsilonWallFunction;
 		value uniform $epsilon_0;
 	}
-  
-	frontAndBack
-	{
-		type empty;
-	}
 }
 
 

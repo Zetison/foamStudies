@@ -1,0 +1,3 @@
+#!/bin/bash
+mkdir -p ~/Downloads/vtu
+ifem-to-vt ~/Downloads/Cyl2D.hdf5 ~/Downloads/vtu/Cyl2D.vtu --nvis 3

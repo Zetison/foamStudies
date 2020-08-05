@@ -11,10 +11,10 @@ outputFolder=$HOME/results/IFEM/cylinder
 mkdir -p $outputFolder
 cp Cylinder2D_chorin-template.xinp Cylinder2D-template.xinp generate_blockMeshDict_file.c parameters exportResults.py $outputFolder
 cd $outputFolder
-NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
-#NAVIERSTOKES=/home/akva/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
+#NAVIERSTOKES=$HOME/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
+NAVIERSTOKES=/home/akva/kode/IFEM/Apps/IFEM-NavierStokes/r-mpi/bin/NavierStokes
 GENERATOR=$HOME/kode/meshscripts/cylinder/cylinder.py
-FORMS="mixed mixed-full subgrid chorin"
+FORMS="chorin mixed mixed-full subgrid"
 FORMS="mixed-full"
 GENERATE=$1
 POSTPROCESS="-vtf 1 -hdf5"

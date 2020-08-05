@@ -8,13 +8,14 @@ then
 fi
 
 DICTS="0/epsilon 0/k 0/nut 0/nuTilda 0/omega 0/p 0/s 0/U \
-       constant/transportProperties \
+       constant/transportProperties constant/turbulenceProperties \
        system/decomposeParDict system/controlDict \
 			 postProcScript.py generate_blockMeshDict_file.c"
 SED_VARIABLES="BDD DIAM LENGTH NRE RE MESH OMEGA_ROT \
-							 NP START_TIME END_TIME DELTA_T U_INF AREF LREF \
+							 NP START_TIME END_TIME DELTA_T U_INF AREF LREF SIMULATION_TYPE \
 							 EPSILON_0 K_0 NUT_0 OMEGA_0 NU MODEL_NAME WRITE_INTERVAL PURGE_WRITE STRIDE"
-for MESH in 6
+MESH_ARR=$(seq 6 6)
+for MESH in $MESH_ARR
 do
 	pathToFolder="$HOME/results/openfoam/"$name"_MESH_"$MESH
 	rm -rf $pathToFolder/*
@@ -28,15 +29,16 @@ do
 	g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file
 	./generate_blockMeshDict_file "openfoam"
 	blockMesh
-	
+	setExprBoundaryFields	
+
 	decomposePar
 	mpirun -np $NP pisoFoam -parallel
-	
+#	
 	python3 convertDatToCSV.py
-	python3 exportResults.py --inputname="postProcessing/forceCoeffs/0/coefficient.dat" --outputname="results_OF_$MESH.txt" --openfoam
-	cat results_OF_$MESH.txt
-	
-#	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py -mpi 
-#	paraview --script=postProcScript.py
+#	python3 exportResults.py --inputname="postProcessing/forceCoeffs/0/coefficient.dat" --outputname="results_OF_$MESH.txt" --openfoam
+#	cat results_OF_$MESH.txt
+#	
+##	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py -mpi 
+	~/programs/paraview_build/bin/paraview --script=postProcScript.py
 	popd > /dev/null
 done

@@ -33,18 +33,6 @@ boundaryField
 		value uniform ($u_inf 0 0);
 	}
 	
-//	outlet
-//	{
-//		type       inletOutlet;
-//		inletValue uniform ($u_inf 0 0);
-//		value      $internalField;
-//	}
-		
-//	outlet
-//	{
-//		type zeroGradient;
-//	}
-	
 	outlet
 	{
 		type advective;
@@ -53,11 +41,6 @@ boundaryField
 	SED_MODEL_NAME
 	{
 		type noSlip;
-	}
-	
-	frontAndBack
-	{
-		type empty;
 	}
 }
 

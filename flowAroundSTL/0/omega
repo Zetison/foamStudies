@@ -46,11 +46,6 @@ boundaryField
 		type  omegaWallFunction;
 		value uniform $omega_0;
 	}
-  
-	frontAndBack
-	{
-		type empty;
-	}
 }
 
 

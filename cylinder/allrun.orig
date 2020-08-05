@@ -1,0 +1,66 @@
+#!/bin/bash
+MODEL_NAME="cylinder"
+NP=4    	# Number of processors
+name=${1:-$MODEL_NAME}
+if [ -z "$DISPLAY" ]
+then
+	echo "Error: set the DISPLAY variable" #The display variable should be set for post processing purposes in paraview. This issue arises when using screen, and can be resolved by first getting the display variable outside the screen session (echo $DISPLAY) and then inside the screen session setting the variable to this value (i.e. export DISPLAY=localhost:10.0)"
+fi
+
+for MESH in 6
+do
+	pathToFolder="$HOME/results/openfoam/"$name"_MESH_"$MESH
+	rm -rf $pathToFolder/*
+	mkdir -p $pathToFolder
+	cp -r ./* $pathToFolder
+	
+	pushd $pathToFolder > /dev/null
+	./sed_parameters $MODEL_NAME $NP "openfoam" "$MESH" 
+	
+	g++ generate_blockMeshDict_file.c -o generate_blockMeshDict_file
+	./generate_blockMeshDict_file "openfoam"
+<<<<<<< HEAD
+#	blockMesh
+#	
+#	decomposePar
+#	mpirun -np $NP pisoFoam -parallel
+#	
+#	python3 convertDatToCSV.py
+#	python3 exportResults.py --inputname="postProcessing/forceCoeffs/0/coefficient.dat" --outputname="results_OF_$MESH.txt" --openfoam
+#	cat results_OF_$MESH.txt
+#	
+##	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py 
+#	#paraview --script=postProcScript.py
+#	popd > /dev/null
+||||||| 001129f
+	blockMesh
+	
+	decomposePar
+	mpirun -np $NP pisoFoam -parallel
+	
+	python3 convertDatToCSV.py
+	python3 exportResults.py --inputname="postProcessing/forceCoeffs/0/coefficient.dat" --outputname="results_OF_$MESH.txt" --openfoam
+	cat results_OF_$MESH.txt
+	
+#	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py 
+	#paraview --script=postProcScript.py
+	popd > /dev/null
+=======
+	blockMesh
+	
+	decomposePar
+	mpirun -np $NP pisoFoam -parallel
+	
+	python3 convertDatToCSV.py
+	python3 exportResults.py --inputname="postProcessing/forceCoeffs/0/coefficient.dat" --outputname="results_OF_$MESH.txt" --openfoam
+	cat results_OF_$MESH.txt
+	
+<<<<<<< HEAD
+	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py -mpi 
+=======
+#	mpiexec -n $NP ~/programs/paraview_build/bin/pvbatch postProcScript.py 
+>>>>>>> 001129f36a4469d71f8b1930593047f336b86665
+	#paraview --script=postProcScript.py
+	popd > /dev/null
+>>>>>>> 89545f85b6d07d1610fd1db9bf4d4de29336d61d
+done

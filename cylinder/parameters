@@ -7,8 +7,9 @@ LENGTH=1.0        # Length of cylinder
 OMEGA_ROT=0.0     # Angular velocity of cylinder rotation
 U_INF=1.0         # incident velocity speed
 BDD=64            # ratio between height of domain and diameter of cylinder
-PURGE_WRITE=2     # Integer representing a limit on the number of time directories 
+PURGE_WRITE=0     # Integer representing a limit on the number of time directories 
                   # that are stored by overwriting time directories on a cyclic basis
+SIMULATION_TYPE=laminar									
 
 LREF=$LENGTH
 NRE=$(echo "5*2^($MESH-6)" | bc -l) 				  # minimum number of elements withing D/sqrt(Re) outside cylinder

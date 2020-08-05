@@ -2,7 +2,7 @@
 
 #if test "$MODEL_NAME" = "BeTSSi"
 #then
-NU=0.01     			# kinematic viscosity
+NU=0.001     			# kinematic viscosity
 START_TIME=0      # Start time for simulation
 END_TIME=800      # End time for simulation
 U_INF=-1.0        # incident velocity speed
@@ -14,6 +14,7 @@ DY=20.0         # this should be 4.5 times the cross sectional diameter of objec
 AREF=50.0       # (roughly the) cross sectional area of submarine 
 PURGE_WRITE=2     # Integer representing a limit on the number of time directories 
                  # that are stored by overwriting time directories on a cyclic basis
+SIMULATION_TYPE=LES
 #fi
 
 LREF=7.0

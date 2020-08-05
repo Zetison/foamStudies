@@ -1,7 +1,7 @@
 #!/bin/bash
 MODEL_NAME="BeTSSi"
 #MODEL_NAME="sphere_320" #sphere_320, sphere_1280, sphere_5120, sphere_20480
-NP=4    	# Number of processors
+NP=7    	# Number of processors
 name=${1:-$MODEL_NAME}
 if [ -z "$DISPLAY" ]
 then
@@ -12,10 +12,10 @@ DICTS="0/epsilon 0/k 0/nut 0/nuTilda 0/omega 0/p 0/s 0/U \
        constant/transportProperties \
        system/blockMeshDict system/decomposeParDict system/controlDict system/surfaceFeatureExtractDict system/snappyHexMeshDict \
 			 postProcScript.py"
-SED_VARIABLES="DX_FRNT DX_BCK DZ_TOP DZ_BT DY MESH RE MESH \
-							 NP START_TIME END_TIME DELTA_T U_INF AREF LREF \
+SED_VARIABLES="DX_FRNT DX_BCK DZ_TOP DZ_BT DY MESH RE \
+							 NP START_TIME END_TIME DELTA_T U_INF AREF LREF SIMULATION_TYPE \
 							 EPSILON_0 K_0 NUT_0 OMEGA_0 NU MODEL_NAME WRITE_INTERVAL PURGE_WRITE STRIDE"
-for MESH in 0
+for MESH in 1
 do
 	pathToFolder="$HOME/results/openfoam/"$name"_MESH_"$MESH
 	rm -rf $pathToFolder/*
